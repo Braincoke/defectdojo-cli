@@ -5,12 +5,17 @@ import cli.handleUnexpectedStatus
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.requireObject
+import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
 import defectdojo.api.DefectDojoUtil
 import defectdojo.api.v1.DefectDojoAPI
 import defectdojo.api.v1.LanguageType
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.inSet
+import org.kodein.di.generic.provider
 
 
 class LanguageTypesCli : CliktCommand(
@@ -19,6 +24,17 @@ class LanguageTypesCli : CliktCommand(
 ) {
     val dojoAPI: DefectDojoAPI by requireObject()
     override fun run() {}
+
+}
+
+/** Dependency injection module  **/
+val languageTypeModule = Kodein.Module("language-type") {
+    bind<CliktCommand>().inSet() with provider {
+        LanguageTypesCli().subcommands(
+            LanguageTypesListCli(),
+            LanguageTypesIdCli()
+        )
+    }
 }
 
 class LanguageTypesListCli : GetCommand(
@@ -33,12 +49,13 @@ class LanguageTypesListCli : GetCommand(
                 limit = qLimit,
                 offset = qOffset,
                 nameContains = qNameContains,
-                nameContainsIgnoreCase = qNameContainsIgnoreCase)
+                nameContainsIgnoreCase = qNameContainsIgnoreCase
+            )
                 .execute()
             handleUnexpectedStatus(response)
             val languageTypes = response.body()
             println(DefectDojoUtil.formatAsTable(languageTypes))
-        } catch (e : JsonSyntaxException) {
+        } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }
     }
@@ -57,7 +74,7 @@ class LanguageTypesIdCli : CliktCommand(
             handleUnexpectedStatus(response)
             val languageType = response.body()
             println(DefectDojoUtil.formatAsTable(listOf(languageType)))
-        } catch (e : JsonSyntaxException) {
+        } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }
     }

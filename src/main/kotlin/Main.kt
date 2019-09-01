@@ -7,13 +7,19 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import defectdojo.api.v1.DefectDojoAPI
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.setBinding
 import java.util.logging.Logger
 
-data class DojoConfig(var url: String,
-                      var username: String,
-                      var apiKey: String,
-                      var apiVersion: String,
-                      var verbose: Boolean)
+data class DojoConfig(
+    var url: String,
+    var username: String,
+    var apiKey: String,
+    var apiVersion: String,
+    var verbose: Boolean
+)
 
 class Dojo : CliktCommand(
     name = "defectdojo-cli",
@@ -32,18 +38,26 @@ class Dojo : CliktCommand(
         const val DEFAULT_APIVERSION = "v1"
     }
 
-    private val url : String? by option(help = "The base URL to the API. " +
-            "Defaults to the environment variable $ENVVAR_URL.", envvar = ENVVAR_URL)
-    private val username : String? by option(help = "Your DefectDojo username. " +
-            "Defaults to the environment variable $ENVVAR_USERNAME.", envvar = ENVVAR_USERNAME)
-    private val apiKey : String? by option("--key", help = "The token to access the API. " +
-            "Defaults to the environment variable $ENVVAR_APIKEY.", envvar =  ENVVAR_APIKEY)
-    private val apiVersion by option("--apiversion", help = "The version of the API to use. " +
-            "Defaults to $DEFAULT_APIVERSION.").default(DEFAULT_APIVERSION)
+    private val url: String? by option(
+        help = "The base URL to the API. " +
+                "Defaults to the environment variable $ENVVAR_URL.", envvar = ENVVAR_URL
+    )
+    private val username: String? by option(
+        help = "Your DefectDojo username. " +
+                "Defaults to the environment variable $ENVVAR_USERNAME.", envvar = ENVVAR_USERNAME
+    )
+    private val apiKey: String? by option(
+        "--key", help = "The token to access the API. " +
+                "Defaults to the environment variable $ENVVAR_APIKEY.", envvar = ENVVAR_APIKEY
+    )
+    private val apiVersion by option(
+        "--apiversion", help = "The version of the API to use. " +
+                "Defaults to $DEFAULT_APIVERSION."
+    ).default(DEFAULT_APIVERSION)
     private val logger = Logger.getLogger(this::class.java.name)
     private val debug by option(help = "Print the http responses.").flag(default = false)
 
-    lateinit var dojoAPI : DefectDojoAPI
+    lateinit var dojoAPI: DefectDojoAPI
 
     override fun run() {
         if (url == null || apiKey == null || username == null) {
@@ -62,12 +76,16 @@ class Dojo : CliktCommand(
 }
 
 
-fun main(args: Array<String>) = Dojo()
-    .subcommands(
-        ProductCli()
-            .subcommands(ProductListCli()),
-        ProductTypesCli()
-            .subcommands(ProductTypesListCli()),
-        LanguageTypesCli()
-            .subcommands(LanguageTypesListCli(), LanguageTypesIdCli())
-    ).main(args)
+fun main(args: Array<String>) {
+
+    val kodein = Kodein {
+        bind() from setBinding<CliktCommand>()
+        import(languageTypeModule)
+        import(productModule)
+        import(productTypeModule)
+    }
+
+    val commands: Set<CliktCommand> by kodein.instance()
+
+    Dojo().subcommands(commands).main(args)
+}

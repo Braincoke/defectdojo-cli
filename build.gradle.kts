@@ -13,6 +13,13 @@ repositories {
     jcenter()
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -21,7 +28,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.6.1")
     implementation("com.squareup.retrofit2:converter-gson:2.6.1")
     implementation("com.squareup.okhttp3:logging-interceptor:3.12.0")
+    implementation("org.kodein.di:kodein-di-generic-jvm:6.3.3")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.1")
+
 }
 
 application {
