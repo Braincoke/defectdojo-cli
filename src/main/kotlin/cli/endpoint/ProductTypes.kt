@@ -1,6 +1,7 @@
 package cli.endpoint
 
 import cli.GetCommand
+import cli.GetCommandWithOrder
 import cli.handleUnexpectedStatus
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
@@ -17,7 +18,7 @@ class ProductTypesCli : CliktCommand(
     override fun run() {}
 }
 
-class ProductTypesListCli : GetCommand(
+class ProductTypesListCli : GetCommandWithOrder(
     name = "list",
     help = """Retrieve the list of product types"""
 ) {

@@ -10,8 +10,8 @@ findings and more.
 ## Build 
 
 1. Install [gradle 5.6.1]()
-2. Run `gradle build`
-3. The resulting jar file is in `build/libs`
+2. Run `gradle installDist`
+3. The binary file is in `build/install/defectdojo-cli/bin/`
 
 ## Usage
 
@@ -24,13 +24,13 @@ Currently the following features endpoints are implemented :
 Once you have your jar file you can run the following command to display the help menu :
 
 ~~~bash
-java -jar <path/to/jar/file> 
+defectdojo-cli --help
 ~~~
 
 ### List every product 
 
 ~~~
-java -jar <jarfile> product list
+defectdojo-cli product list
 ~~~
 
 Result :
@@ -43,7 +43,7 @@ ID     NAME      TYPE                         URI                     FINDINGS
 ### List every product type 
 
 ~~~
-java -jar <jarfile> product-type list
+defectdojo-cli product-type list
 ~~~
 
 ~~~bash

@@ -67,6 +67,23 @@ interface DefectDojoAPI {
     @PUT("products/{id}/")
     fun updateProduct(@Path("id") id: Int, @Body product: Product): Call<Void>
 
+    /******************************************************************************
+     * Language
+     **************************************************************************** */
+
+    @GET("language_types/")
+    fun getLanguageTypes(
+        @Query("limit")limit : String? = null,
+        @Query("offset")offset : String? = null,
+        @Query("language")name : String? = null,
+        @Query("language__contains") nameContains: String? = null,
+        @Query("language__icontains") nameContainsIgnoreCase: String? = null
+    ): Call<LanguageTypesGetResponse>
+
+    @GET("language_types/{id}/")
+    fun getLanguageType(
+        @Path("id") id: Int
+    ): Call<LanguageType>
 
     companion object {
 

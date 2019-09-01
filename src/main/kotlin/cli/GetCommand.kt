@@ -22,8 +22,4 @@ abstract class GetCommand(help: String = "",
             by option("--limit", help = "Specify the number of elements to retrieve per request")
     protected val qOffset : String ?
             by option("--offset", help = "Specify the offset to start retrieving elements per request")
-    protected val qOrderBy : String ?
-            by option("--order", help = "Orders the result set based on the selection").choice(
-                "name", "id", "description", "finding_count", "created", "product_type_id"
-            )
 }

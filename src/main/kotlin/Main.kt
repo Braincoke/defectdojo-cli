@@ -1,7 +1,4 @@
-import cli.endpoint.ProductCli
-import cli.endpoint.ProductListCli
-import cli.endpoint.ProductTypesCli
-import cli.endpoint.ProductTypesListCli
+import cli.endpoint.*
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintHelpMessage
 import com.github.ajalt.clikt.core.UsageError
@@ -70,5 +67,7 @@ fun main(args: Array<String>) = Dojo()
         ProductCli()
             .subcommands(ProductListCli()),
         ProductTypesCli()
-            .subcommands(ProductTypesListCli())
+            .subcommands(ProductTypesListCli()),
+        LanguageTypesCli()
+            .subcommands(LanguageTypesListCli(), LanguageTypesIdCli())
     ).main(args)
