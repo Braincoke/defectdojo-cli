@@ -18,7 +18,8 @@ data class DojoConfig(
     var username: String,
     var apiKey: String,
     var apiVersion: String,
-    var verbose: Boolean
+    var debug: Boolean,
+    var api : DefectDojoAPI
 )
 
 class Dojo : CliktCommand(
@@ -57,7 +58,6 @@ class Dojo : CliktCommand(
     private val logger = Logger.getLogger(this::class.java.name)
     private val debug by option(help = "Print the http responses.").flag(default = false)
 
-    lateinit var dojoAPI: DefectDojoAPI
 
     override fun run() {
         if (url == null || apiKey == null || username == null) {
@@ -70,8 +70,17 @@ class Dojo : CliktCommand(
                 throw UsageError(String.format(errorMessage, "--username", ENVVAR_USERNAME))
             throw PrintHelpMessage(this)
         }
-        dojoAPI = DefectDojoAPI.create(url.toString(), username.toString(), apiKey.toString(), debug)
-        context.obj = dojoAPI
+        val dojoAPI = DefectDojoAPI.create(url.toString(), username.toString(), apiKey.toString(), debug)
+
+        val config = DojoConfig(
+            url.toString(),
+            username.toString(),
+            apiKey.toString(),
+            apiVersion,
+            debug,
+            dojoAPI)
+
+        context.obj = config
     }
 }
 

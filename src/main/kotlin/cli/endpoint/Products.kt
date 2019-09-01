@@ -1,5 +1,6 @@
 package cli.endpoint
 
+import DojoConfig
 import cli.GetCommandWithOrder
 import cli.handleUnexpectedStatus
 import com.github.ajalt.clikt.core.CliktCommand
@@ -8,7 +9,6 @@ import com.github.ajalt.clikt.core.requireObject
 import com.github.ajalt.clikt.core.subcommands
 import com.google.gson.JsonSyntaxException
 import defectdojo.api.DefectDojoUtil
-import defectdojo.api.v1.DefectDojoAPI
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
@@ -18,7 +18,6 @@ class ProductCli : CliktCommand(
     name = "product",
     help = """Manage products from the command line."""
 ) {
-    val dojoAPI: DefectDojoAPI by requireObject()
     override fun run() {}
 }
 
@@ -35,8 +34,10 @@ class ProductListCli : GetCommandWithOrder(
     name = "list",
     help = """Retrieve the list of products"""
 ) {
-    private val dojoAPI: DefectDojoAPI by requireObject()
+    private val dojoConfig: DojoConfig by requireObject()
+
     override fun run() {
+        val dojoAPI = dojoConfig.api
         try {
             val response = dojoAPI.getProducts(
                 name = qName,

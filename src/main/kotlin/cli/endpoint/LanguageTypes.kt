@@ -1,5 +1,6 @@
 package cli.endpoint
 
+import DojoConfig
 import cli.GetCommand
 import cli.handleUnexpectedStatus
 import com.github.ajalt.clikt.core.CliktCommand
@@ -10,8 +11,6 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
 import defectdojo.api.DefectDojoUtil
-import defectdojo.api.v1.DefectDojoAPI
-import defectdojo.api.v1.LanguageType
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
@@ -22,7 +21,6 @@ class LanguageTypesCli : CliktCommand(
     name = "language-type",
     help = """Manage language types from the command line."""
 ) {
-    val dojoAPI: DefectDojoAPI by requireObject()
     override fun run() {}
 
 }
@@ -41,8 +39,10 @@ class LanguageTypesListCli : GetCommand(
     name = "list",
     help = """Retrieve the list of language types"""
 ) {
-    private val dojoAPI: DefectDojoAPI by requireObject()
+    private val dojoConfig: DojoConfig by requireObject()
+
     override fun run() {
+        val dojoAPI = dojoConfig.api
         try {
             val response = dojoAPI.getLanguageTypes(
                 name = qName,
@@ -65,9 +65,11 @@ class LanguageTypesIdCli : CliktCommand(
     name = "id",
     help = """Retrieve a language type from its identifier"""
 ) {
-    private val dojoAPI: DefectDojoAPI by requireObject()
+    private val dojoConfig: DojoConfig by requireObject()
     private val id by argument(help = "The identifier of the product type to retrieve").int()
+
     override fun run() {
+        val dojoAPI = dojoConfig.api
         try {
             val response = dojoAPI.getLanguageType(id)
                 .execute()
