@@ -2,7 +2,7 @@ package cli.endpoint
 
 import DojoConfig
 import cli.GetCommandWithOrder
-import cli.handleUnexpectedStatus
+import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.requireObject
@@ -51,8 +51,7 @@ class ProductListCli : GetCommandWithOrder(
                 orderBy = qOrderBy
             )
                 .execute()
-            handleUnexpectedStatus(response)
-            val productsResponse = response.body()
+            val productsResponse = getBody(response)
             println(TerminalFormatter.asTable(productsResponse))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
@@ -72,8 +71,7 @@ class ProductsIdCli : CliktCommand(
         val dojoAPI = dojoConfig.api
         try {
             val response = dojoAPI.getProduct(id).execute()
-            handleUnexpectedStatus(response)
-            val product = response.body()
+            val product = getBody(response)
             println(TerminalFormatter.productsAsTable(listOf(product)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")

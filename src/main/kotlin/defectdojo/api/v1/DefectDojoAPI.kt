@@ -70,6 +70,22 @@ interface DefectDojoAPI {
     /******************************************************************************
      * Language
      **************************************************************************** */
+    @GET("languages/")
+    fun getLanguages(
+        @Query("limit") limit : String? = null,
+        @Query("offset") offset : String? = null,
+        @Query("language") name : String? = null,
+        @Query("language__contains") nameContains: String? = null,
+        @Query("language__icontains") nameContainsIgnoreCase: String? = null,
+        @Query("product__id") productId: String? = null,
+        @Query("product__name") productName: String? = null,
+        @Query("product__name__icontains") productNameContainsIgnoreCase: String? = null
+    ): Call<LanguagesGetResponse>
+
+    @GET("languages/{id}/")
+    fun getLanguage(
+        @Path("id") id: Int
+    ): Call<Language>
 
     @GET("language_types/")
     fun getLanguageTypes(

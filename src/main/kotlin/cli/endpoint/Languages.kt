@@ -1,77 +1,89 @@
 package cli.endpoint
 
 import DojoConfig
-import cli.GetCommandWithOrder
+import cli.GetCommand
+import cli.TerminalFormatter
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.requireObject
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
-import cli.TerminalFormatter
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
 
-class ProductTypesCli : CliktCommand(
-    name = "product-type",
-    help = """Manage product types from the command line."""
+
+class LanguageCli : CliktCommand(
+    name = "language",
+    help = """Manage languages from the command line."""
 ) {
     override fun run() {}
+
 }
 
 /** Dependency injection module  **/
-val productTypeModule = Kodein.Module("product-type") {
+val languageModule = Kodein.Module("language") {
     bind<CliktCommand>().inSet() with provider {
-        ProductTypesCli().subcommands(
-            ProductTypesListCli(),
-            ProductTypeIdCli()
+        LanguageCli().subcommands(
+            LanguageListCli(),
+            LanguageIdCli()
         )
     }
 }
 
-class ProductTypesListCli : GetCommandWithOrder(
+class LanguageListCli : GetCommand(
     name = "list",
-    help = """Retrieve the list of product types"""
+    help = """Retrieve the list of languages"""
 ) {
     private val dojoConfig: DojoConfig by requireObject()
 
+    private val  qProductId by option("--product-id",
+        help = "Limit the research to products with the specified identifier")
+    private val  qProductNameContainsIgnoreCase by option("--product-name-icontains",
+        help = "Limit the research to products whose name contain this string ignoring casing")
+    private val  qProductName by option("--product-name",
+        help = "Limit the research to products with the specified name")
     override fun run() {
         val dojoAPI = dojoConfig.api
         try {
-            val response = dojoAPI.getProductTypes(
+            val response = dojoAPI.getLanguages(
                 name = qName,
                 limit = qLimit,
                 offset = qOffset,
                 nameContains = qNameContains,
                 nameContainsIgnoreCase = qNameContainsIgnoreCase,
-                orderBy = qOrderBy
+                productId = qProductId,
+                productName = qProductName,
+                productNameContainsIgnoreCase = qProductNameContainsIgnoreCase
             )
                 .execute()
-            val productsResponse = getBody(response)
-            println(TerminalFormatter.asTable(productsResponse))
+            val languages = getBody(response)
+            println(TerminalFormatter.asTable(languages))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }
     }
 }
 
-class ProductTypeIdCli : CliktCommand(
+class LanguageIdCli : CliktCommand(
     name = "id",
-    help = """Retrieve a product type from its id"""
+    help = """Retrieve a language from its identifier"""
 ) {
     private val dojoConfig: DojoConfig by requireObject()
-    private val id by argument(help = "The identifier of the product").int()
+    private val id by argument(help = "The identifier of the language to retrieve").int()
 
     override fun run() {
         val dojoAPI = dojoConfig.api
         try {
-            val response = dojoAPI.getProductType(id).execute()
-            val productType = getBody(response)
-            println(TerminalFormatter.productTypesAsTable(listOf(productType)))
+            val response = dojoAPI.getLanguage(id)
+                .execute()
+            val language = getBody(response)
+            println(TerminalFormatter.languagesAsTable(listOf(language)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }

@@ -2,7 +2,7 @@ package cli.endpoint
 
 import DojoConfig
 import cli.GetCommand
-import cli.handleUnexpectedStatus
+import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.requireObject
@@ -52,8 +52,7 @@ class LanguageTypesListCli : GetCommand(
                 nameContainsIgnoreCase = qNameContainsIgnoreCase
             )
                 .execute()
-            handleUnexpectedStatus(response)
-            val languageTypes = response.body()
+            val languageTypes = getBody(response)
             println(TerminalFormatter.asTable(languageTypes))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
@@ -73,8 +72,7 @@ class LanguageTypesIdCli : CliktCommand(
         try {
             val response = dojoAPI.getLanguageType(id)
                 .execute()
-            handleUnexpectedStatus(response)
-            val languageType = response.body()
+            val languageType = getBody(response)
             println(TerminalFormatter.languageTypesAsTable(listOf(languageType)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
