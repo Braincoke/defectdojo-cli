@@ -7,8 +7,10 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.requireObject
 import com.github.ajalt.clikt.core.subcommands
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
-import defectdojo.api.DefectDojoUtil
+import cli.TerminalFormatter
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
@@ -25,7 +27,8 @@ class ProductTypesCli : CliktCommand(
 val productTypeModule = Kodein.Module("product-type") {
     bind<CliktCommand>().inSet() with provider {
         ProductTypesCli().subcommands(
-            ProductTypesListCli()
+            ProductTypesListCli(),
+            ProductTypeIdCli()
         )
     }
 }
@@ -50,7 +53,27 @@ class ProductTypesListCli : GetCommandWithOrder(
                 .execute()
             handleUnexpectedStatus(response)
             val productsResponse = response.body()
-            println(DefectDojoUtil.formatAsTable(productsResponse))
+            println(TerminalFormatter.asTable(productsResponse))
+        } catch (e: JsonSyntaxException) {
+            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
+        }
+    }
+}
+
+class ProductTypeIdCli : CliktCommand(
+    name = "id",
+    help = """Retrieve a product type from its id"""
+) {
+    private val dojoConfig: DojoConfig by requireObject()
+    private val id by argument(help = "The identifier of the product").int()
+
+    override fun run() {
+        val dojoAPI = dojoConfig.api
+        try {
+            val response = dojoAPI.getProductType(id).execute()
+            handleUnexpectedStatus(response)
+            val productType = response.body()
+            println(TerminalFormatter.productTypesAsTable(listOf(productType)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }

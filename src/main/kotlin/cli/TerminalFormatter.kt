@@ -1,18 +1,18 @@
-package defectdojo.api
+package cli
 
 import defectdojo.api.v1.*
 
 /**
  * This class defines a set of useful functions to wrap the API
  */
-class DefectDojoUtil(val api: DefectDojoAPI) {
+class TerminalFormatter(val api: DefectDojoAPI) {
     companion object {
         /**
          * Format a matrix of information as a command line output.
          * The first row of the matrix should contain the headers.
          * The columns length will be adapted to the largest element of each column.
          */
-        private fun formatAsTable(stringMatrix: Array<Array<String>>): String {
+        private fun asTable(stringMatrix: Array<Array<String>>): String {
             if (stringMatrix.isEmpty()) return ""
             // Determine each maximum column length
             val maxColumnLength = Array(stringMatrix[0].size) { 0 }
@@ -36,15 +36,23 @@ class DefectDojoUtil(val api: DefectDojoAPI) {
             return table
         }
 
+        private val productHeader = arrayOf("ID", "NAME", "TYPE", "URI", "FINDINGS")
         /**
          * Format the response of a GET /products/ request
          */
-        fun formatAsTable(productsGetResponse: ProductsGetResponse? ) : String {
-            val headerRow = arrayOf("ID", "NAME", "TYPE", "URI", "FINDINGS")
-            if (productsGetResponse == null) return formatAsTable(arrayOf(headerRow))
-            val products = productsGetResponse.products ?: return formatAsTable(arrayOf(headerRow))
-            val stringMatrix = Array(products.size + 1) { Array(headerRow.size) { "" } }
-            stringMatrix[0] = headerRow
+        fun asTable(productsGetResponse: ProductsGetResponse? ) : String {
+            if (productsGetResponse == null) return asTable(arrayOf(productHeader))
+            val products = productsGetResponse.products
+            return productsAsTable(products)
+        }
+
+        /**
+         * Format the response of a GET /products/ request
+         */
+        fun productsAsTable(products: List<Product?>? ) : String {
+            if (products == null) return asTable(arrayOf(productHeader))
+            val stringMatrix = Array(products.size + 1) { Array(productHeader.size) { "" } }
+            stringMatrix[0] = productHeader
             products.forEachIndexed { rowIndex, product ->
                 if (product != null)
                     stringMatrix[rowIndex + 1] = arrayOf(
@@ -55,19 +63,28 @@ class DefectDojoUtil(val api: DefectDojoAPI) {
                         product.findingsCount.toString()
                     )
             }
-            return formatAsTable(stringMatrix)
+            return asTable(stringMatrix)
         }
 
+
+        private val productTypeHeader = arrayOf("ID", "NAME", "URI", "KEY_PRODUCT", "CRITICAL_PRODUCT")
         /**
          * Format the response of a GET /product_types/ request
          */
-        fun formatAsTable(productTypesGetResponse: ProductTypesGetResponse? ) : String {
-            val headerRow = arrayOf("ID", "NAME", "URI", "KEY_PRODUCT", "CRITICAL_PRODUCT")
-            if (productTypesGetResponse == null) return formatAsTable(arrayOf(headerRow))
-            val types = productTypesGetResponse.productTypes ?: return formatAsTable(arrayOf(headerRow))
-            val stringMatrix = Array(types.size + 1) { Array(headerRow.size) { "" } }
-            stringMatrix[0] = headerRow
-            types.forEachIndexed { rowIndex, type ->
+        fun asTable(productTypesGetResponse: ProductTypesGetResponse? ) : String {
+            if (productTypesGetResponse == null) return asTable(arrayOf(productTypeHeader))
+            val types = productTypesGetResponse.productTypes
+            return productTypesAsTable(types)
+        }
+
+        /**
+         * Format the response of a GET /product_types/{id} request
+         */
+        fun productTypesAsTable(productTypes: List<ProductType?>? ) : String {
+            if (productTypes == null) return asTable(arrayOf(productTypeHeader))
+            val stringMatrix = Array(productTypes.size + 1) { Array(productTypeHeader.size) { "" } }
+            stringMatrix[0] = productTypeHeader
+            productTypes.forEachIndexed { rowIndex, type ->
                 if (type != null)
                     stringMatrix[rowIndex + 1] = arrayOf(
                         type.id.toString(),
@@ -77,24 +94,24 @@ class DefectDojoUtil(val api: DefectDojoAPI) {
                         type.criticalProduct.toString()
                     )
             }
-            return formatAsTable(stringMatrix)
+            return asTable(stringMatrix)
         }
 
         private val languageTypeHeader = arrayOf("ID", "URI", "LANGUAGE", "COLOR")
         /**
          * Format the response of a GET /language_types/ request
          */
-        fun formatAsTable(languageTypesGetResponse: LanguageTypesGetResponse? ) : String {
-            if (languageTypesGetResponse == null) return formatAsTable(arrayOf(languageTypeHeader))
+        fun asTable(languageTypesGetResponse: LanguageTypesGetResponse? ) : String {
+            if (languageTypesGetResponse == null) return asTable(arrayOf(languageTypeHeader))
             val types = languageTypesGetResponse.languageTypes
-            return formatAsTable(types)
+            return languageTypesAsTable(types)
         }
 
         /**
          * Format the response of a GET /language_types/{id} request
          */
-        fun formatAsTable(languageTypes: List<LanguageType?>? ) : String {
-            if (languageTypes == null) return formatAsTable(arrayOf(languageTypeHeader))
+        fun languageTypesAsTable(languageTypes: List<LanguageType?>? ) : String {
+            if (languageTypes == null) return asTable(arrayOf(languageTypeHeader))
             val stringMatrix = Array(languageTypes.size + 1) { Array(languageTypeHeader.size) { "" } }
             stringMatrix[0] = languageTypeHeader
             languageTypes.forEachIndexed { rowIndex, type ->
@@ -106,7 +123,7 @@ class DefectDojoUtil(val api: DefectDojoAPI) {
                         type.color.toString()
                     )
             }
-            return formatAsTable(stringMatrix)
+            return asTable(stringMatrix)
         }
     }
 }
