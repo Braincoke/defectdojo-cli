@@ -2,7 +2,7 @@ package cli.endpoint
 
 import DojoConfig
 import cli.GetCommand
-import cli.TerminalFormatter
+import cli.TableFormatter
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
@@ -12,10 +12,12 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
+import defectdojo.api.v1.DefectDojoAPI
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
+import retrofit2.Call
 
 
 class LanguageCli : CliktCommand(
@@ -63,7 +65,7 @@ class LanguageListCli : GetCommand(
             )
                 .execute()
             val languages = getBody(response)
-            println(TerminalFormatter.asTable(languages))
+            println(TableFormatter.format(languages))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }
@@ -83,7 +85,7 @@ class LanguageIdCli : CliktCommand(
             val response = dojoAPI.getLanguage(id)
                 .execute()
             val language = getBody(response)
-            println(TerminalFormatter.languagesAsTable(listOf(language)))
+            println(TableFormatter.format(listOf(language)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }

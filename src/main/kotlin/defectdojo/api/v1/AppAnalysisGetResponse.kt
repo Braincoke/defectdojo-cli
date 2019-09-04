@@ -7,4 +7,4 @@ data class AppAnalysisGetResponse(
 	val meta: Meta? = null,
 	@field:SerializedName("objects")
 	val appAnalysisList: List<AppAnalysis?>? = null
-)
+) : EndpointResponseObject

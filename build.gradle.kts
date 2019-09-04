@@ -29,6 +29,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.6.1")
     implementation("com.squareup.okhttp3:logging-interceptor:3.12.0")
     implementation("org.kodein.di:kodein-di-generic-jvm:6.3.3")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.50")
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.1")
 
 }

@@ -2,7 +2,7 @@ package cli.endpoint
 
 import DojoConfig
 import cli.GetCommand
-import cli.TerminalFormatter
+import cli.TableFormatter
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
@@ -18,7 +18,6 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 
 class AppAnalysisCli : CliktCommand(
@@ -67,7 +66,7 @@ class AppAnalysisListCli : GetCommand(
             )
                 .execute()
             val technologies = getBody(response)
-            println(TerminalFormatter.asTable(technologies))
+            println(TableFormatter.format(technologies))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }
@@ -87,7 +86,7 @@ class AppAnalysisIdCli : CliktCommand(
             val response = dojoAPI.getAppAnalysis(id)
                 .execute()
             val technology = getBody(response)
-            println(TerminalFormatter.appAnalysesAsTable(listOf(technology)))
+            println(TableFormatter.format(listOf(technology)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }

@@ -1,7 +1,7 @@
 package cli.endpoint
 
 import DojoConfig
-import cli.TerminalFormatter
+import cli.TableFormatter
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
@@ -83,7 +83,7 @@ class UserListCli : CliktCommand(
             )
                 .execute()
             val users = getBody(response)
-            println(TerminalFormatter.asTable(users))
+            println(TableFormatter.format(users))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }
@@ -103,7 +103,7 @@ class UserIdCli : CliktCommand(
             val response = dojoAPI.getUser(id)
                 .execute()
             val user = getBody(response)
-            println(TerminalFormatter.usersAsTable(listOf(user)))
+            println(TableFormatter.format(listOf(user)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }

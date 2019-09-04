@@ -6,4 +6,4 @@ data class LanguageTypesGetResponse(
 	val meta: Meta? = null,
 	@field:SerializedName("objects")
 	val languageTypes: List<LanguageType?>? = null
-)
+) : EndpointResponseObject

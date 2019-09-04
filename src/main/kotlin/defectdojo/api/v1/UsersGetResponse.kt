@@ -6,4 +6,4 @@ data class UsersGetResponse(
 	val meta: Meta? = null,
 	@field:SerializedName("objects")
 	val users: List<User?>? = null
-)
+) : EndpointResponseObject
