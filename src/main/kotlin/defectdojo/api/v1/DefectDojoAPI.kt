@@ -11,19 +11,32 @@ import retrofit2.http.*
 
 interface DefectDojoAPI {
 
-    /* App analysis (Technology) */
-
+    /******************************************************************************
+     * App analysis
+     **************************************************************************** */
     @GET("app_analysis/")
-    fun getAppAnalyses(): Call<AppAnalysisList>
+    fun getAppAnalyses(
+        @Query("limit") limit : String? = null,
+        @Query("offset") offset : String? = null,
+        @Query("name") name : String? = null,
+        @Query("name__contains") nameContains: String? = null,
+        @Query("name__icontains") nameContainsIgnoreCase: String? = null,
+        @Query("product__id") productId: String? = null,
+        @Query("product__name") productName: String? = null,
+        @Query("product__name__icontains") productNameContainsIgnoreCase: String? = null
+    ): Call<AppAnalysisGetResponse>
 
-    @GET("app_analysis/{id}")
-    fun getAppAnalysis(@Path("id") appAnalysisId: Int): Call<AppAnalysis>
+    @GET("app_analysis/{id}/")
+    fun getAppAnalysis(
+        @Path("id") id: Int
+    ): Call<AppAnalysis>
+
 
     @POST("app_analysis/")
-    fun postAppAnalysis()
+    fun addAppAnalysis(@Body appAnalysis: AppAnalysis) : Call<Void>
 
     /******************************************************************************
-     * Products
+     * Product Types
      **************************************************************************** */
 
     @GET("product_types/")
@@ -47,6 +60,11 @@ interface DefectDojoAPI {
 
     @PUT("product_types/{id}")
     fun updateProductType(@Path("id") id: Int, @Body productType: ProductType) : Call<Void>
+
+
+    /******************************************************************************
+     * Products
+     **************************************************************************** */
 
     @GET("products/")
     fun getProducts(@Query("limit")limit : String? = null,
@@ -87,6 +105,10 @@ interface DefectDojoAPI {
         @Path("id") id: Int
     ): Call<Language>
 
+
+    /******************************************************************************
+     * Language Types
+     **************************************************************************** */
     @GET("language_types/")
     fun getLanguageTypes(
         @Query("limit")limit : String? = null,
@@ -101,6 +123,32 @@ interface DefectDojoAPI {
         @Path("id") id: Int
     ): Call<LanguageType>
 
+    /******************************************************************************
+     * Users
+     **************************************************************************** */
+    @GET("users/")
+    fun getUsers(
+        @Query("limit")limit : String? = null,
+        @Query("offset")offset : String? = null,
+        @Query("username")username : String? = null,
+        @Query("username__contains") usernameContains: String? = null,
+        @Query("username__icontains") usernameContainsIgnoreCase: String? = null,
+        @Query("first_name")firstName : String? = null,
+        @Query("first_name__contains") firstNameContains: String? = null,
+        @Query("first_name__icontains") firstNameContainsIgnoreCase: String? = null,
+        @Query("first_name") lastName : String? = null,
+        @Query("last_name__contains") lastNameContains: String? = null,
+        @Query("last_name__icontains") lastNameContainsIgnoreCase: String? = null
+    ): Call<UsersGetResponse>
+
+    @GET("users/{id}/")
+    fun getUser(
+        @Path("id") id: Int
+    ): Call<User>
+
+    /******************************************************************************
+     * Factory
+     **************************************************************************** */
     companion object {
 
         private fun createRetrofit(apiBaseUrl: String, username: String, apiKey: String, debug: Boolean): Retrofit {

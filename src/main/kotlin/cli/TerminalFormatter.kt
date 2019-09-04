@@ -169,5 +169,72 @@ class TerminalFormatter(val api: DefectDojoAPI) {
             }
             return asTable(stringMatrix)
         }
+
+        private val appAnalysisHeader = arrayOf("ID", "PRODUCT", "TECHNOLOGY", "URI")
+        /**
+         * Format the response of a GET /app_analysis/ request
+         */
+        fun asTable(appAnalysisGetResponse: AppAnalysisGetResponse?): String {
+            if (appAnalysisGetResponse == null) return asTable(arrayOf(appAnalysisHeader))
+            val technologies = appAnalysisGetResponse.appAnalysisList
+            return appAnalysesAsTable(technologies)
+        }
+
+        /**
+         * Format the response of a GET /app_analysis/{id} request
+         */
+        fun appAnalysesAsTable(technologies: List<AppAnalysis?>?): String {
+            if (technologies.isNullOrEmpty() || technologies.filterNotNull().isEmpty()) return asTable(
+                arrayOf(
+                    appAnalysisHeader
+                )
+            )
+            val stringMatrix = Array(technologies.size + 1) { Array(appAnalysisHeader.size) { "" } }
+            stringMatrix[0] = appAnalysisHeader
+            technologies.forEachIndexed { rowIndex, technology ->
+                if (technology != null)
+                    stringMatrix[rowIndex + 1] = arrayOf(
+                        technology.id.toString(),
+                        technology.product ?: "#",
+                        technology.name ?: "#",
+                        technology.resourceUri ?: "#"
+                    )
+            }
+            return asTable(stringMatrix)
+        }
+
+        private val userHeader = arrayOf("ID", "USERNAME", "FIRST_NAME", "LAST_NAME", "URI", "LAST_LOGIN")
+        /**
+         * Format the response of a GET /language_types/ request
+         */
+        fun asTable(usersGetResponse: UsersGetResponse?): String {
+            if (usersGetResponse == null) return asTable(arrayOf(userHeader))
+            val users = usersGetResponse.users
+            return usersAsTable(users)
+        }
+
+        /**
+         * Format the response of a GET /language_types/{id} request
+         */
+        fun usersAsTable(users: List<User?>?): String {
+            if (users.isNullOrEmpty() || users.filterNotNull().isEmpty()) return asTable(
+                arrayOf(userHeader)
+            )
+            val stringMatrix = Array(users.size + 1) { Array(userHeader.size) { "" } }
+            stringMatrix[0] = userHeader
+            users.forEachIndexed { rowIndex, user ->
+                if (user != null)
+                    stringMatrix[rowIndex + 1] = arrayOf(
+                        user.id.toString(),
+                        user.username ?: "#",
+                        user.firstName ?: "#",
+                        user.lastName ?: "#",
+                        user.resourceUri ?: "#",
+                        user.lastLogin ?: "#"
+                    )
+            }
+            return asTable(stringMatrix)
+        }
+
     }
 }

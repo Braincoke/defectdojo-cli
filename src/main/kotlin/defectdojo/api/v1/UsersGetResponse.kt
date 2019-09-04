@@ -2,9 +2,8 @@ package defectdojo.api.v1
 
 import com.google.gson.annotations.SerializedName
 
-data class AppAnalysisGetResponse(
-
+data class UsersGetResponse(
 	val meta: Meta? = null,
 	@field:SerializedName("objects")
-	val appAnalysisList: List<AppAnalysis?>? = null
+	val users: List<User?>? = null
 )
