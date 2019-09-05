@@ -21,6 +21,7 @@ abstract class PostCommand (help: String = "",
             when (response.code()) {
                 201 -> println("Done")
                 200 -> println("Done")
+                204 -> println("Done")
                 401 -> println("Insufficient authorizations. Try --help for more information.")
                 else -> println("An error occured. Try the option --debug to get more information.")
             }

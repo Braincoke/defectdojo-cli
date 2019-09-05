@@ -35,6 +35,10 @@ interface DefectDojoAPI {
     @POST("app_analysis/")
     fun addAppAnalysis(@Body appAnalysis: AppAnalysis) : Call<Void>
 
+
+    @DELETE("app_analysis/{id}/")
+    fun deleteAppAnalysis(@Path("id") id:Int) : Call<Void>
+
     /******************************************************************************
      * Development Envinronment
      **************************************************************************** */

@@ -37,7 +37,8 @@ val appAnalysisModule = Kodein.Module("app-analysis") {
         AppAnalysisCli().subcommands(
             AppAnalysisListCli(),
             AppAnalysisIdCli(),
-            AppAnalysisAddCli()
+            AppAnalysisAddCli(),
+            AppAnalysisDeleteCli()
         )
     }
 }
@@ -108,5 +109,19 @@ class AppAnalysisAddCli : PostCommand(
             created = LocalDateTime.now().toString()
         )
         return dojoAPI.addAppAnalysis(appAnalysis).execute()
+    }
+}
+
+
+class AppAnalysisDeleteCli : PostCommand(
+    name = "delete",
+    help = """Remove a technology (app analysis) from a specified product.  
+        |This action requires the auth|can change user permission.""".trimMargin()
+) {
+
+    private val qId by argument("id", help = "The identifier of the technology").int()
+
+    override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
+        return dojoAPI.deleteAppAnalysis(qId).execute()
     }
 }
