@@ -1,9 +1,7 @@
 package cli.endpoint
 
 import DojoConfig
-import cli.GetCommand
-import cli.TableFormatter
-import cli.getBody
+import cli.*
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.requireObject
@@ -13,10 +11,14 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
 import defectdojo.api.v1.AppAnalysis
+import defectdojo.api.v1.DefectDojoAPI
+import defectdojo.api.v1.EndpointObject
+import defectdojo.api.v1.EndpointResponseObject
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
+import retrofit2.Call
 import java.time.LocalDateTime
 
 
@@ -39,11 +41,10 @@ val appAnalysisModule = Kodein.Module("app-analysis") {
     }
 }
 
-class AppAnalysisListCli : GetCommand(
+class AppAnalysisListCli : GetCommandWithName(
     name = "list",
     help = """Retrieve the list of technologies (app analysis)"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
 
     private val  qProductId by option("--product-id",
         help = "Limit the research to products with the specified identifier")
@@ -51,53 +52,41 @@ class AppAnalysisListCli : GetCommand(
         help = "Limit the research to products whose name contain this string ignoring casing")
     private val  qProductName by option("--product-name",
         help = "Limit the research to products with the specified name")
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getAppAnalyses(
-                name = qName,
-                limit = qLimit,
-                offset = qOffset,
-                nameContains = qNameContains,
-                nameContainsIgnoreCase = qNameContainsIgnoreCase,
-                productId = qProductId,
-                productName = qProductName,
-                productNameContainsIgnoreCase = qProductNameContainsIgnoreCase
-            )
-                .execute()
-            val technologies = getBody(response)
-            println(TableFormatter.format(technologies))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getAppAnalyses(
+            name = qName,
+            limit = qLimit,
+            offset = qOffset,
+            nameContains = qNameContains,
+            nameContainsIgnoreCase = qNameContainsIgnoreCase,
+            productId = qProductId,
+            productName = qProductName,
+            productNameContainsIgnoreCase = qProductNameContainsIgnoreCase
+        )
+            .execute()
+        return TableFormatter.format(getBody(response))
     }
 }
 
-class AppAnalysisIdCli : CliktCommand(
+class AppAnalysisIdCli : GetCommand(
     name = "id",
     help = """Retrieve a technology (app analysis) from its identifier"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
+
     private val id by argument(help = "The identifier of the technology to retrieve").int()
 
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getAppAnalysis(id)
-                .execute()
-            val technology = getBody(response)
-            println(TableFormatter.format(listOf(technology)))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getAppAnalysis(id)
+            .execute()
+        return TableFormatter.format(listOf(getBody(response)))
     }
 }
 
-class AppAnalysisAddCli : CliktCommand(
+class AppAnalysisAddCli : DojoCommand(
     name = "add",
     help = """Add a technology (app analysis) to a specified product"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
     private val qName by argument("name", help = "The name of the technology")
     private val qId by argument("id", help = "The identifier of the product").int()
     private val qUser by argument("user", help = "The identifier of the user linked to the addition").int()

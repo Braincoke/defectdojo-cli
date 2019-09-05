@@ -17,4 +17,4 @@ data class AppAnalysis(
 	val id: Int? = null,
 	val version: String? = null,
 	val user: String? = null
-)
+) : DefectDojoObject

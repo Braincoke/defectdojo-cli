@@ -10,7 +10,7 @@ abstract class GetCommandWithOrder(help: String = "",
                           printHelpOnEmptyArgs: Boolean = false,
                           helpTags: Map<String, String> = emptyMap(),
                           autoCompleteEnvvar: String? = "")
-    : GetCommand(help, epilog, name, invokeWithoutSubcommand, printHelpOnEmptyArgs, helpTags, autoCompleteEnvvar) {
+    : GetCommandWithName(help, epilog, name, invokeWithoutSubcommand, printHelpOnEmptyArgs, helpTags, autoCompleteEnvvar) {
     protected val qOrderBy : String ?
             by option("--order", help = "Orders the result set based on the selection").choice(
                 "name", "id", "description", "finding_count", "created", "product_type_id"

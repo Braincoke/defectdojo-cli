@@ -2,6 +2,7 @@ package cli.endpoint
 
 import DojoConfig
 import cli.GetCommand
+import cli.GetCommandWithName
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
@@ -11,6 +12,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
 import cli.TableFormatter
+import defectdojo.api.v1.DefectDojoAPI
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
@@ -35,38 +37,36 @@ val languageTypeModule = Kodein.Module("language-type") {
     }
 }
 
-class LanguageTypesListCli : GetCommand(
+class LanguageTypesListCli : GetCommandWithName(
     name = "list",
     help = """Retrieve the list of language types"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
 
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getLanguageTypes(
-                name = qName,
-                limit = qLimit,
-                offset = qOffset,
-                nameContains = qNameContains,
-                nameContainsIgnoreCase = qNameContainsIgnoreCase
-            )
-                .execute()
-            val languageTypes = getBody(response)
-            println(TableFormatter.format(languageTypes))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getLanguageTypes(
+            name = qName,
+            limit = qLimit,
+            offset = qOffset,
+            nameContains = qNameContains,
+            nameContainsIgnoreCase = qNameContainsIgnoreCase
+        )
+            .execute()
+        return TableFormatter.format(getBody(response))
     }
 }
 
-class LanguageTypesIdCli : CliktCommand(
+class LanguageTypesIdCli : GetCommand(
     name = "id",
     help = """Retrieve a language type from its identifier"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
     private val id by argument(help = "The identifier of the product type to retrieve").int()
 
+
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response =  dojoAPI.getLanguageType(id)
+            .execute()
+        return TableFormatter.format(listOf(getBody(response)))
+    }
     override fun run() {
         val dojoAPI = dojoConfig.api
         try {

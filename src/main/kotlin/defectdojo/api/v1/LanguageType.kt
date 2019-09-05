@@ -8,4 +8,4 @@ data class LanguageType(
 	val resourceUri: String? = null,
 	val language: String? = null,
 	val id: Int? = null
-)
+) : DefectDojoObject

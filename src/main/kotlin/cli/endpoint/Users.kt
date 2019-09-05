@@ -1,6 +1,7 @@
 package cli.endpoint
 
 import DojoConfig
+import cli.GetCommand
 import cli.TableFormatter
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
@@ -11,6 +12,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
+import defectdojo.api.v1.DefectDojoAPI
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
@@ -34,11 +36,10 @@ val usersModule = Kodein.Module("user") {
     }
 }
 
-class UserListCli : CliktCommand(
+class UserListCli : GetCommand(
     name = "list",
     help = """Retrieve the list of users"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
 
     private val qLimit : String ?
             by option("--limit", help = "Specify the number of elements to retrieve per request")
@@ -65,47 +66,38 @@ class UserListCli : CliktCommand(
         help = "Limit the research to users whose last name contain this string with casing")
     private val  qLastName by option("--lastname",
         help = "Limit the research to users with the specified last name")
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getUsers(
-                limit = qLimit,
-                offset = qOffset,
-                username = qUsername,
-                usernameContains = qUsernameContains,
-                usernameContainsIgnoreCase = qUsernameContainsIgnoreCase,
-                firstName = qFirstName,
-                firstNameContains = qFirstNameContains,
-                firstNameContainsIgnoreCase = qFirstNameContainsIgnoreCase,
-                lastName = qLastName,
-                lastNameContains = qLastNameContains,
-                lastNameContainsIgnoreCase = qLastNameContainsIgnoreCase
-            )
-                .execute()
-            val users = getBody(response)
-            println(TableFormatter.format(users))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+
+
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getUsers(
+            limit = qLimit,
+            offset = qOffset,
+            username = qUsername,
+            usernameContains = qUsernameContains,
+            usernameContainsIgnoreCase = qUsernameContainsIgnoreCase,
+            firstName = qFirstName,
+            firstNameContains = qFirstNameContains,
+            firstNameContainsIgnoreCase = qFirstNameContainsIgnoreCase,
+            lastName = qLastName,
+            lastNameContains = qLastNameContains,
+            lastNameContainsIgnoreCase = qLastNameContainsIgnoreCase
+        )
+            .execute()
+
+        return TableFormatter.format(getBody(response))
     }
 }
 
-class UserIdCli : CliktCommand(
+class UserIdCli : GetCommand(
     name = "id",
     help = """Retrieve a user from its identifier"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
     private val id by argument(help = "The identifier of the user to retrieve").int()
 
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getUser(id)
-                .execute()
-            val user = getBody(response)
-            println(TableFormatter.format(listOf(user)))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getUser(id)
+            .execute()
+
+        return TableFormatter.format(listOf(getBody(response)))
     }
 }

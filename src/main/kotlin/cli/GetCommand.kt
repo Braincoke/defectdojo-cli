@@ -1,25 +1,26 @@
 package cli
 
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.types.choice
+import com.github.ajalt.clikt.core.PrintMessage
+import com.google.gson.JsonSyntaxException
+import defectdojo.api.v1.DefectDojoAPI
 
 abstract class GetCommand(help: String = "",
-                          epilog: String = "",
-                          name: String? = null,
-                          invokeWithoutSubcommand: Boolean = false,
-                          printHelpOnEmptyArgs: Boolean = false,
-                          helpTags: Map<String, String> = emptyMap(),
-                          autoCompleteEnvvar: String? = "")
-    : CliktCommand(help, epilog, name, invokeWithoutSubcommand, printHelpOnEmptyArgs, helpTags, autoCompleteEnvvar) {
-    protected val qName : String?
-            by option ("--name", help = "Limit the research to this exact name")
-    protected val qNameContains : String ?
-            by option("--name-contains", help = "Limit the research to products containing this string")
-    protected val qNameContainsIgnoreCase : String ?
-            by option("--iname-contains", help = "Limit the research to products containing this string ignoring casing")
-    protected val qLimit : String ?
-            by option("--limit", help = "Specify the number of elements to retrieve per request")
-    protected val qOffset : String ?
-            by option("--offset", help = "Specify the offset to start retrieving elements per request")
+                           epilog: String = "",
+                           name: String? = null,
+                           invokeWithoutSubcommand: Boolean = false,
+                           printHelpOnEmptyArgs: Boolean = false,
+                           helpTags: Map<String, String> = kotlin.collections.emptyMap(),
+                           autoCompleteEnvvar: String? = "")
+: DojoCommand(help, epilog, name, invokeWithoutSubcommand, printHelpOnEmptyArgs, helpTags, autoCompleteEnvvar)  {
+
+    override fun run() {
+        val dojoAPI = dojoConfig.api
+        try {
+            println(getFormattedResponse(dojoAPI))
+        } catch (e: JsonSyntaxException) {
+            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
+        }
+    }
+
+    abstract fun getFormattedResponse(dojoAPI: DefectDojoAPI) : String
 }

@@ -156,9 +156,8 @@ class TableFormatter(val api: DefectDojoAPI) {
         /**
          * Infer the type of a list of endpoints objects and display it as a table in the standard output
          */
-        inline fun <reified T : Any> format(list: List<T?>?): String {
-            val type = object : TypeReference<T>() {}.type
-            return when (type.typeName) {
+        inline fun <reified T : EndpointObject> format(list: List<T?>?): String {
+            return when (T::class.java.name) {
                 AppAnalysis::class.java.name -> format(list, appAnalysisHeaderMapping)
                 Language::class.java.name -> format(list, languageHeaderMapping)
                 LanguageType::class.java.name -> format(list, languageTypeHeaderMapping)
@@ -167,12 +166,6 @@ class TableFormatter(val api: DefectDojoAPI) {
                 User::class.java.name -> format(list, userHeaderMapping)
                 else -> ERROR_MESSAGE
             }
-        }
-
-        abstract class TypeReference<T> : Comparable<TypeReference<T>> {
-            val type: Type =
-                (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
-            override fun compareTo(other: TypeReference<T>) = 0
         }
     }
 }

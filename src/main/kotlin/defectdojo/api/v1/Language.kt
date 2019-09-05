@@ -15,4 +15,4 @@ data class Language(
 	@field:SerializedName("language-type")
 	val languageType: String? = null,
 	val user: String? = null
-)
+) : DefectDojoObject

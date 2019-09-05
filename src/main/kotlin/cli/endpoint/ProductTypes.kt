@@ -1,6 +1,7 @@
 package cli.endpoint
 
 import DojoConfig
+import cli.GetCommand
 import cli.GetCommandWithOrder
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
@@ -11,6 +12,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
 import cli.TableFormatter
+import defectdojo.api.v1.DefectDojoAPI
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
@@ -37,35 +39,34 @@ class ProductTypesListCli : GetCommandWithOrder(
     name = "list",
     help = """Retrieve the list of product types"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getProductTypes(
+            name = qName,
+            limit = qLimit,
+            offset = qOffset,
+            nameContains = qNameContains,
+            nameContainsIgnoreCase = qNameContainsIgnoreCase,
+            orderBy = qOrderBy
+        )
+            .execute()
 
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getProductTypes(
-                name = qName,
-                limit = qLimit,
-                offset = qOffset,
-                nameContains = qNameContains,
-                nameContainsIgnoreCase = qNameContainsIgnoreCase,
-                orderBy = qOrderBy
-            )
-                .execute()
-            val productsResponse = getBody(response)
-            println(TableFormatter.format(productsResponse))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+        return TableFormatter.format(getBody(response))
     }
 }
 
-class ProductTypeIdCli : CliktCommand(
+class ProductTypeIdCli : GetCommand(
     name = "id",
     help = """Retrieve a product type from its id"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
+
     private val id by argument(help = "The identifier of the product").int()
 
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getProductType(id)
+            .execute()
+
+        return TableFormatter.format(listOf(getBody(response)))
+    }
     override fun run() {
         val dojoAPI = dojoConfig.api
         try {

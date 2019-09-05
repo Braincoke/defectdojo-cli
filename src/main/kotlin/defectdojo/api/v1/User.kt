@@ -13,4 +13,4 @@ data class User(
 	@field:SerializedName("first_name")
 	val firstName: String? = null,
 	val username: String? = null
-)
+) : DefectDojoObject

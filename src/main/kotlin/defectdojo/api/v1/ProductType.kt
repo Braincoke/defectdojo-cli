@@ -15,4 +15,4 @@ data class ProductType(
 	val updated: String? = null,
 	@field:SerializedName("critical_product")
 	val criticalProduct: Boolean? = null
-)
+) : DefectDojoObject

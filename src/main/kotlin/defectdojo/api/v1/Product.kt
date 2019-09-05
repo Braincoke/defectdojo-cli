@@ -28,4 +28,4 @@ data class Product(
 	@field:SerializedName("user_records")
 	val userRecords: Any? = null,
 	val id: Int? = null
-)
+) : DefectDojoObject

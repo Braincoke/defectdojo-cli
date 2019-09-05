@@ -2,6 +2,7 @@ package cli.endpoint
 
 import DojoConfig
 import cli.GetCommand
+import cli.GetCommandWithName
 import cli.TableFormatter
 import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
@@ -17,7 +18,6 @@ import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
-import retrofit2.Call
 
 
 class LanguageCli : CliktCommand(
@@ -38,11 +38,10 @@ val languageModule = Kodein.Module("language") {
     }
 }
 
-class LanguageListCli : GetCommand(
+class LanguageListCli : GetCommandWithName(
     name = "list",
     help = """Retrieve the list of languages"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
 
     private val  qProductId by option("--product-id",
         help = "Limit the research to products with the specified identifier")
@@ -50,44 +49,33 @@ class LanguageListCli : GetCommand(
         help = "Limit the research to products whose name contain this string ignoring casing")
     private val  qProductName by option("--product-name",
         help = "Limit the research to products with the specified name")
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getLanguages(
-                name = qName,
-                limit = qLimit,
-                offset = qOffset,
-                nameContains = qNameContains,
-                nameContainsIgnoreCase = qNameContainsIgnoreCase,
-                productId = qProductId,
-                productName = qProductName,
-                productNameContainsIgnoreCase = qProductNameContainsIgnoreCase
-            )
-                .execute()
-            val languages = getBody(response)
-            println(TableFormatter.format(languages))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getLanguages(
+            name = qName,
+            limit = qLimit,
+            offset = qOffset,
+            nameContains = qNameContains,
+            nameContainsIgnoreCase = qNameContainsIgnoreCase,
+            productId = qProductId,
+            productName = qProductName,
+            productNameContainsIgnoreCase = qProductNameContainsIgnoreCase
+        )
+            .execute()
+        return TableFormatter.format(getBody(response))
     }
 }
 
-class LanguageIdCli : CliktCommand(
+class LanguageIdCli : GetCommand(
     name = "id",
     help = """Retrieve a language from its identifier"""
 ) {
-    private val dojoConfig: DojoConfig by requireObject()
+
     private val id by argument(help = "The identifier of the language to retrieve").int()
 
-    override fun run() {
-        val dojoAPI = dojoConfig.api
-        try {
-            val response = dojoAPI.getLanguage(id)
-                .execute()
-            val language = getBody(response)
-            println(TableFormatter.format(listOf(language)))
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+    override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
+        val response = dojoAPI.getLanguage(id)
+            .execute()
+        return TableFormatter.format(listOf(getBody(response)))
     }
 }
