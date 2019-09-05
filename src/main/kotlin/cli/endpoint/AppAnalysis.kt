@@ -19,6 +19,7 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
 import retrofit2.Call
+import retrofit2.Response
 import java.time.LocalDateTime
 
 
@@ -83,10 +84,12 @@ class AppAnalysisIdCli : GetCommand(
     }
 }
 
-class AppAnalysisAddCli : DojoCommand(
+class AppAnalysisAddCli : PostCommand(
     name = "add",
-    help = """Add a technology (app analysis) to a specified product"""
+    help = """Add a technology (app analysis) to a specified product.  
+        |This action requires the auth|can change user permission.""".trimMargin()
 ) {
+
     private val qName by argument("name", help = "The name of the technology")
     private val qId by argument("id", help = "The identifier of the product").int()
     private val qUser by argument("user", help = "The identifier of the user linked to the addition").int()
@@ -94,8 +97,7 @@ class AppAnalysisAddCli : DojoCommand(
     private val qConfidence by option("--confidence", help = "The confidence of the app analysis").int()
     private val qWebsite by option("--website", help = "The website of the technology")
 
-    override fun run() {
-        val dojoAPI = dojoConfig.api
+    override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
         val appAnalysis = AppAnalysis(
             website = qWebsite,
             name = qName,
@@ -105,17 +107,6 @@ class AppAnalysisAddCli : DojoCommand(
             product = "/api/${dojoConfig.apiVersion}/products/$qId/",
             created = LocalDateTime.now().toString()
         )
-        try {
-            val response = dojoAPI.addAppAnalysis(appAnalysis)
-                .execute()
-            when (response.code()) {
-                201 -> println("Technology added")
-                200 -> println("Technology added")
-                401 -> println("Insufficient authorizations. This action requires the auth|can change user permission.")
-                else -> println("An error occured. Try the option --debug to get more information.")
-            }
-        } catch (e: JsonSyntaxException) {
-            throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
-        }
+        return dojoAPI.addAppAnalysis(appAnalysis).execute()
     }
 }

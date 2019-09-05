@@ -36,6 +36,27 @@ interface DefectDojoAPI {
     fun addAppAnalysis(@Body appAnalysis: AppAnalysis) : Call<Void>
 
     /******************************************************************************
+     * Development Envinronment
+     **************************************************************************** */
+    @GET("development_environments/")
+    fun getDevelopmentEnvironments(
+        @Query("limit") limit : String? = null,
+        @Query("offset") offset : String? = null,
+        @Query("name") name : String? = null,
+        @Query("name__contains") nameContains: String? = null,
+        @Query("name__icontains") nameContainsIgnoreCase: String? = null
+    ): Call<DevelopmentEnvironmentGetResponse>
+
+    @GET("development_environments/{id}/")
+    fun getDevelopmentEnvironment(
+        @Path("id") id: Int
+    ): Call<DevelopmentEnvironment>
+
+
+    @POST("development_environments/")
+    fun addDevelopmentEnvironment(@Body developmentEnvironment: DevelopmentEnvironment) : Call<Void>
+    
+    /******************************************************************************
      * Product Types
      **************************************************************************** */
 

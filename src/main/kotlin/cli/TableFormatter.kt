@@ -43,6 +43,38 @@ class TableFormatter(val api: DefectDojoAPI) {
             return table
         }
 
+
+        val appAnalysisHeaderMapping = mapOf(
+            "ID" to AppAnalysis::id.name,
+            "PRODUCT" to AppAnalysis::product.name,
+            "TECHNOLOGY" to AppAnalysis::name.name,
+            "URI" to AppAnalysis::resourceUri.name
+        )
+
+        val developmentEnvironmentHeaderMapping = mapOf(
+            "ID" to DevelopmentEnvironment::id.name,
+            "NAME" to DevelopmentEnvironment::name.name,
+            "URI" to DevelopmentEnvironment::resourceUri.name
+        )
+
+        val languageHeaderMapping = mapOf(
+            "ID" to Language::id.name,
+            "LANGUAGE" to Language::languageType.name,
+            "PRODUCT" to Language::product.name,
+            "FILES" to Language::files.name,
+            "CODE" to Language::code.name,
+            "BLANK" to Language::blank.name,
+            "COMMENT" to Language::comment.name,
+            "URI" to Language::resourceUri.name
+        )
+
+
+        val languageTypeHeaderMapping = mapOf(
+            "ID" to LanguageType::id.name,
+            "URI" to LanguageType::resourceUri.name,
+            "LANGUAGE" to LanguageType::language.name,
+            "COLOR" to LanguageType::color.name
+        )
         val productHeaderMapping = mapOf(
             "ID" to Product::id.name,
             "NAME" to Product::name.name,
@@ -57,31 +89,6 @@ class TableFormatter(val api: DefectDojoAPI) {
             "URI" to ProductType::resourceUri.name,
             "KEY_PRODUCT" to ProductType::keyProduct.name,
             "CRITICAL_PRODUCT" to ProductType::criticalProduct.name
-        )
-
-        val languageTypeHeaderMapping = mapOf(
-            "ID" to LanguageType::id.name,
-            "URI" to LanguageType::resourceUri.name,
-            "LANGUAGE" to LanguageType::language.name,
-            "COLOR" to LanguageType::color.name
-        )
-
-        val languageHeaderMapping = mapOf(
-            "ID" to Language::id.name,
-            "LANGUAGE" to Language::languageType.name,
-            "PRODUCT" to Language::product.name,
-            "FILES" to Language::files.name,
-            "CODE" to Language::code.name,
-            "BLANK" to Language::blank.name,
-            "COMMENT" to Language::comment.name,
-            "URI" to Language::resourceUri.name
-        )
-
-        val appAnalysisHeaderMapping = mapOf(
-            "ID" to AppAnalysis::id.name,
-            "PRODUCT" to AppAnalysis::product.name,
-            "TECHNOLOGY" to AppAnalysis::name.name,
-            "URI" to AppAnalysis::resourceUri.name
         )
 
         val userHeaderMapping : Map<String, String> = mapOf(
@@ -100,6 +107,7 @@ class TableFormatter(val api: DefectDojoAPI) {
             if (element == null)  {
                 return when (element) {
                     is AppAnalysisGetResponse -> format(arrayOf(appAnalysisHeaderMapping.keys.toTypedArray()))
+                    is DevelopmentEnvironmentGetResponse -> format(arrayOf(developmentEnvironmentHeaderMapping.keys.toTypedArray()))
                     is LanguagesGetResponse -> format(arrayOf(languageHeaderMapping.keys.toTypedArray()))
                     is LanguageTypesGetResponse -> format(arrayOf(languageTypeHeaderMapping.keys.toTypedArray()))
                     is ProductsGetResponse -> format(arrayOf(productHeaderMapping.keys.toTypedArray()))
@@ -110,6 +118,7 @@ class TableFormatter(val api: DefectDojoAPI) {
             }
             return when (element) {
                 is AppAnalysisGetResponse -> format(element.appAnalysisList)
+                is DevelopmentEnvironmentGetResponse -> format(element.developmentEnvironments)
                 is LanguagesGetResponse -> format(element.languages)
                 is LanguageTypesGetResponse -> format(element.languageTypes)
                 is ProductsGetResponse -> format(element.products)
@@ -159,6 +168,7 @@ class TableFormatter(val api: DefectDojoAPI) {
         inline fun <reified T : EndpointObject> format(list: List<T?>?): String {
             return when (T::class.java.name) {
                 AppAnalysis::class.java.name -> format(list, appAnalysisHeaderMapping)
+                DevelopmentEnvironment::class.java.name -> format(list, developmentEnvironmentHeaderMapping)
                 Language::class.java.name -> format(list, languageHeaderMapping)
                 LanguageType::class.java.name -> format(list, languageTypeHeaderMapping)
                 Product::class.java.name -> format(list, productHeaderMapping)

@@ -90,11 +90,12 @@ fun main(args: Array<String>) {
     val kodein = Kodein {
         bind() from setBinding<CliktCommand>()
         import(appAnalysisModule)
-        import(usersModule)
+        import(developmentEnvironmentModule)
         import(languageModule)
         import(languageTypeModule)
         import(productModule)
         import(productTypeModule)
+        import(usersModule)
     }
 
     val commands: Set<CliktCommand> by kodein.instance()
