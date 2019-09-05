@@ -13,21 +13,28 @@ Defectdojo-CLI uses the gradle plugin `application` to provide installable binar
 If you already have Java installed on your machine you can also compile a fat jar with all the dependencies and
 use the application with `java -jar <path to fat jar>`.
 
+To build the application you will need to install  [gradle](https://gradle.org/install/) (at least version 5.6.1).
+
 ### Download
 
-TODO
+~~~
+git clone https://github.com/Braincoke/defectdojo-cli
+~~~
 
 ### Build
-1. Install [gradle](https://gradle.org/install/) (at least version 5.6.1)
-2. Run `gradle installDist`
-3. The binary file is in `build/install/defectdojo-cli/bin/`
+~~~
+cd defectdojo-cli
+gradle installDist
+~~~
+
+The binary file is in `build/install/defectdojo-cli/bin/`
 
 ### Install
 
-Move the binary file to `/usr/local/bin`
+Copy the binary file to `/usr/local/bin`
 
 ~~~bash
-sudo mv build/install/defectdojo-cli/bin/defectdojo-cli /usr/local/bin
+sudo cp build/install/defectdojo-cli/bin/defectdojo-cli /usr/local/bin
 ~~~
 
 ## Usage
