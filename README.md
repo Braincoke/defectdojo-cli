@@ -7,11 +7,28 @@ The tool is developed in Kotlin with Retrofit and Clikt.
 Thanks to DefectDojo-CLI you can easily perform mass imports of scan results, create or update products, languages, 
 findings and more.
 
-## Build 
+## Download, build, install
 
-1. Install [gradle 5.6.1]()
+Defectdojo-CLI uses the gradle plugin `application` to provide installable binaries.
+If you already have Java installed on your machine you can also compile a fat jar with all the dependencies and
+use the application with `java -jar <path to fat jar>`.
+
+### Download
+
+TODO
+
+### Build
+1. Install [gradle](https://gradle.org/install/) (at least version 5.6.1)
 2. Run `gradle installDist`
 3. The binary file is in `build/install/defectdojo-cli/bin/`
+
+### Install
+
+Move the binary file to `/usr/local/bin`
+
+~~~bash
+sudo mv build/install/defectdojo-cli/bin/defectdojo-cli /usr/local/bin
+~~~
 
 ## Usage
 
@@ -40,14 +57,10 @@ ID     NAME      TYPE                         URI                     FINDINGS
 1      Test1     Research and Development     /api/v1/products/1/     0      
 ~~~
 
-### List every product type 
+### Add a technology 
 
+We add the technology (also called app analysis) `C++` to the project with id `2` and set the related user to
+the one with id `3`
 ~~~
-defectdojo-cli product-type list
-~~~
-
-~~~bash
-ID     NAME                         URI                          KEY_PRODUCT     CRITICAL_PRODUCT     
-------------------------------------------------------------------------------------------------------
-1      Research and Development     /api/v1/product_types/1/     false           false   
+defectdojo-cli app-analysis add C++  2 3
 ~~~
