@@ -50,7 +50,7 @@ class ProductTypesListCli : GetCommandWithOrder(
         )
             .execute()
 
-        return TableFormatter.format(getBody(response))
+        return tableFormatter.format(getBody(response))
     }
 }
 
@@ -65,14 +65,14 @@ class ProductTypeIdCli : GetCommand(
         val response = dojoAPI.getProductType(id)
             .execute()
 
-        return TableFormatter.format(listOf(getBody(response)))
+        return tableFormatter.format(listOf(getBody(response)))
     }
     override fun run() {
         val dojoAPI = dojoConfig.api
         try {
             val response = dojoAPI.getProductType(id).execute()
             val productType = getBody(response)
-            println(TableFormatter.format(listOf(productType)))
+            println(tableFormatter.format(listOf(productType)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }

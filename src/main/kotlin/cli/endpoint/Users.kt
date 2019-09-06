@@ -84,7 +84,7 @@ class UserListCli : GetCommand(
         )
             .execute()
 
-        return TableFormatter.format(getBody(response))
+        return tableFormatter.format(getBody(response))
     }
 }
 
@@ -98,6 +98,6 @@ class UserIdCli : GetCommand(
         val response = dojoAPI.getUser(id)
             .execute()
 
-        return TableFormatter.format(listOf(getBody(response)))
+        return tableFormatter.format(listOf(getBody(response)))
     }
 }

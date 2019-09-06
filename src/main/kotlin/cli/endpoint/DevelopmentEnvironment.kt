@@ -56,7 +56,7 @@ class DevelopmentEnvironmentListCli : GetCommandWithName(
             nameContainsIgnoreCase = qNameContainsIgnoreCase
         )
             .execute()
-        return TableFormatter.format(getBody(response))
+        return tableFormatter.format(getBody(response))
     }
 }
 
@@ -70,7 +70,7 @@ class DevelopmentEnvironmentIdCli : GetCommand(
     override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
         val response = dojoAPI.getDevelopmentEnvironment(id)
             .execute()
-        return TableFormatter.format(listOf(getBody(response)))
+        return tableFormatter.format(listOf(getBody(response)))
     }
 }
 

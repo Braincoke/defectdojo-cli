@@ -50,7 +50,7 @@ class ProductListCli : GetCommandWithOrder(
             orderBy = qOrderBy
         )
             .execute()
-        return TableFormatter.format(getBody(response))
+        return tableFormatter.format(getBody(response))
     }
 }
 
@@ -64,6 +64,6 @@ class ProductsIdCli : GetCommand(
     override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
         val response = dojoAPI.getProduct(id)
             .execute()
-        return TableFormatter.format(listOf(getBody(response)))
+        return tableFormatter.format(listOf(getBody(response)))
     }
 }

@@ -67,7 +67,7 @@ class AppAnalysisListCli : GetCommandWithName(
             productNameContainsIgnoreCase = qProductNameContainsIgnoreCase
         )
             .execute()
-        return TableFormatter.format(getBody(response))
+        return tableFormatter.format(getBody(response))
     }
 }
 
@@ -81,7 +81,7 @@ class AppAnalysisIdCli : GetCommand(
     override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
         val response = dojoAPI.getAppAnalysis(id)
             .execute()
-        return TableFormatter.format(listOf(getBody(response)))
+        return tableFormatter.format(listOf(getBody(response)))
     }
 }
 

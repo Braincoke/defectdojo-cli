@@ -51,7 +51,7 @@ class LanguageTypesListCli : GetCommandWithName(
             nameContainsIgnoreCase = qNameContainsIgnoreCase
         )
             .execute()
-        return TableFormatter.format(getBody(response))
+        return tableFormatter.format(getBody(response))
     }
 }
 
@@ -65,7 +65,7 @@ class LanguageTypesIdCli : GetCommand(
     override fun getFormattedResponse(dojoAPI: DefectDojoAPI): String {
         val response =  dojoAPI.getLanguageType(id)
             .execute()
-        return TableFormatter.format(listOf(getBody(response)))
+        return tableFormatter.format(listOf(getBody(response)))
     }
     override fun run() {
         val dojoAPI = dojoConfig.api
@@ -73,7 +73,7 @@ class LanguageTypesIdCli : GetCommand(
             val response = dojoAPI.getLanguageType(id)
                 .execute()
             val languageType = getBody(response)
-            println(TableFormatter.format(listOf(languageType)))
+            println(tableFormatter.format(listOf(languageType)))
         } catch (e: JsonSyntaxException) {
             throw PrintMessage("Unexpected response from the DefectDojo server. Please check your connection information.")
         }
