@@ -1,24 +1,20 @@
 package cli.endpoint
 
-import DojoConfig
-import cli.*
+import cli.GetCommand
+import cli.GetCommandWithName
+import cli.PostCommand
+import cli.getBody
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.PrintMessage
-import com.github.ajalt.clikt.core.requireObject
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
-import com.google.gson.JsonSyntaxException
 import defectdojo.api.v1.AppAnalysis
 import defectdojo.api.v1.DefectDojoAPI
-import defectdojo.api.v1.EndpointObject
-import defectdojo.api.v1.EndpointResponseObject
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
-import retrofit2.Call
 import retrofit2.Response
 import java.time.LocalDateTime
 
@@ -38,6 +34,7 @@ val appAnalysisModule = Kodein.Module("app-analysis") {
             AppAnalysisListCli(),
             AppAnalysisIdCli(),
             AppAnalysisAddCli(),
+            AppAnalysisUpdateCli(),
             AppAnalysisDeleteCli()
         )
     }
@@ -112,6 +109,45 @@ class AppAnalysisAddCli : PostCommand(
     }
 }
 
+class AppAnalysisUpdateCli : PostCommand(
+    name = "update",
+    help = """Update a technology (app analysis) linked to a specified product.  
+        |This action requires the auth|can change user permission.""".trimMargin()
+) {
+
+    private val qId by argument("id", help = "The identifier of the technology").int()
+    private val qName by option("--name", help = "The name of the technology")
+    private val qProductId by option("--product", help = "The identifier of the product").int()
+    private val qUser by option("--user", help = "The identifier of the user linked to the addition").int()
+    private val qVersion by option("--version", help = "The version of the technology")
+    private val qConfidence by option("--confidence", help = "The confidence of the app analysis").int()
+    private val qWebsite by option("--website", help = "The website of the technology")
+
+    override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
+
+        var productUri = "/api/${dojoConfig.apiVersion}/products/$qProductId/"
+        var userUri =  "/api/${dojoConfig.apiVersion}/users/$qUser/"
+
+        if (qProductId == null || qUser == null) {
+            val currentAppAnalysis = dojoAPI.getAppAnalysis(qId).execute().body()
+            currentAppAnalysis?.let {
+                if (qProductId == null) productUri = currentAppAnalysis.product ?: productUri
+                if (qUser == null) userUri = currentAppAnalysis.user ?: userUri
+            }
+        }
+
+        val appAnalysis = AppAnalysis(
+            id = qId,
+            website = qWebsite,
+            name = qName,
+            user = userUri,
+            confidence = qConfidence,
+            version = qVersion,
+            product = productUri
+        )
+        return dojoAPI.updateAppAnalysis(qId, appAnalysis).execute()
+    }
+}
 
 class AppAnalysisDeleteCli : PostCommand(
     name = "delete",
