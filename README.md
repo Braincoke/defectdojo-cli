@@ -13,8 +13,6 @@ Defectdojo-CLI uses the gradle plugin `application` to provide installable binar
 If you already have Java installed on your machine you can also compile a fat jar with all the dependencies and
 use the application with `java -jar <path to fat jar>`.
 
-To build the application you will need to install  [gradle](https://gradle.org/install/) (at least version 5.6.1).
-
 ### Download
 
 ~~~
@@ -26,6 +24,7 @@ git clone https://github.com/Braincoke/defectdojo-cli
 cd defectdojo-cli
 gradle installDist
 ~~~
+If this does not work you will have to install [gradle](https://gradle.org/install/) (at least version 5.6.1) an try again.
 
 The binary file is in `build/install/defectdojo-cli/bin/`
 
@@ -71,3 +70,36 @@ the one with id `3`
 ~~~
 defectdojo-cli app-analysis add C++  2 3
 ~~~
+
+## Roadmap
+
+This tool is a work in progress.
+The list below details which enpoints have been implemented already :
+
+- [x] app_analysis
+- [ ] build_details
+- [x] development_environments
+- [ ] endpoints
+- [ ] engagements
+- [ ] finding_templates
+- [ ] findings
+- [ ] importscan
+- [ ] jira_configurations
+- [ ] jira_finding_mappings
+- [ ] jira_product_configurations
+- [x] language_types
+- [x] languages
+- [x] product_types
+- [x] products
+- [ ] reimportscan
+- [ ] scan_settings
+- [ ] scans
+- [ ] stub_findings
+- [ ] test_types
+- [ ] tests
+- [ ] tool_configurations
+- [ ] tool_product_settings
+- [ ] tool_types
+- [x] users
+
+
