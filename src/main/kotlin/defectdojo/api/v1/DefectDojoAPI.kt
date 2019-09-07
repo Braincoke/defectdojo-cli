@@ -61,7 +61,10 @@ interface DefectDojoAPI {
 
     @POST("development_environments/")
     fun addDevelopmentEnvironment(@Body developmentEnvironment: DevelopmentEnvironment) : Call<Void>
-    
+
+    @PUT("development_environments/{id}/")
+    fun updateDevelopmentEnvironment(@Path("id") id:Int, @Body developmentEnvironment: DevelopmentEnvironment) : Call<Void>
+
     /******************************************************************************
      * Product Types
      **************************************************************************** */

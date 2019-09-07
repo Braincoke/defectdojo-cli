@@ -37,7 +37,8 @@ val developmentEnvironmentModule = Kodein.Module("development-environment") {
         DevelopmentEnvironmentCli().subcommands(
             DevelopmentEnvironmentListCli(),
             DevelopmentEnvironmentIdCli(),
-            DevelopmentEnvironmentAddCli()
+            DevelopmentEnvironmentAddCli(),
+            DevelopmentEnvironmentUpdateCli()
         )
     }
 }
@@ -82,6 +83,24 @@ class DevelopmentEnvironmentAddCli : PostCommand(
 
     override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
         val developmentEnvironment = DevelopmentEnvironment(
+            name = qName
+        )
+        return dojoAPI.addDevelopmentEnvironment(developmentEnvironment)
+            .execute()
+    }
+
+}
+
+class DevelopmentEnvironmentUpdateCli : PostCommand(
+    name = "update",
+    help = """update a development environment"""
+) {
+    private val qId by argument("id", help = "The identifier of the development environment").int()
+    private val qName by argument("name", help = "The name of the development environment")
+
+    override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
+        val developmentEnvironment = DevelopmentEnvironment(
+            id = qId,
             name = qName
         )
         return dojoAPI.addDevelopmentEnvironment(developmentEnvironment)
