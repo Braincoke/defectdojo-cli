@@ -88,7 +88,7 @@ interface DefectDojoAPI {
     @DELETE("product_types/{id}")
     fun deleteProductType(@Path("id") id: Int): Call<ProductType>
 
-    @PUT("product_types/{id}")
+    @PUT("product_types/{id}/")
     fun updateProductType(@Path("id") id: Int, @Body productType: ProductType) : Call<Void>
 
 
