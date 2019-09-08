@@ -85,7 +85,7 @@ interface DefectDojoAPI {
     @POST("product_types/")
     fun addProductType(@Body productType: ProductType) : Call<Void>
 
-    @DELETE("product_types/{id}")
+    @DELETE("product_types/{id}/")
     fun deleteProductType(@Path("id") id: Int): Call<ProductType>
 
     @PUT("product_types/{id}/")
@@ -153,6 +153,15 @@ interface DefectDojoAPI {
         @Path("id") id: Int
     ): Call<LanguageType>
 
+    @POST("language_types/")
+    fun addLanguageType(@Body languageType: LanguageType) : Call<Void>
+
+    @DELETE("language_types/{id}/")
+    fun deleteLanguageType(@Path("id") id: Int): Call<Void>
+
+    @PUT("language_types/{id}/")
+    fun updateLanguageType(@Path("id") id: Int, @Body languageType: LanguageType) : Call<Void>
+    
     /******************************************************************************
      * Users
      **************************************************************************** */

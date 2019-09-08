@@ -13,7 +13,7 @@ abstract class GetCommand(help: String = "",
                            name: String? = null,
                            invokeWithoutSubcommand: Boolean = false,
                            printHelpOnEmptyArgs: Boolean = false,
-                           helpTags: Map<String, String> = kotlin.collections.emptyMap(),
+                           helpTags: Map<String, String> = emptyMap(),
                            autoCompleteEnvvar: String? = "")
 : DojoCommand(help, epilog, name, invokeWithoutSubcommand, printHelpOnEmptyArgs, helpTags, autoCompleteEnvvar)  {
 
