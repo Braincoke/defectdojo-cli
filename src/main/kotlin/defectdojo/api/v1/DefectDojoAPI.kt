@@ -14,7 +14,7 @@ interface DefectDojoAPI {
     /******************************************************************************
      * App analysis
      **************************************************************************** */
-    @GET("app_analysis/")
+    @GET("$APP_ANALYSIS/")
     fun getAppAnalyses(
         @Query("limit") limit : String? = null,
         @Query("offset") offset : String? = null,
@@ -26,25 +26,25 @@ interface DefectDojoAPI {
         @Query("product__name__icontains") productNameContainsIgnoreCase: String? = null
     ): Call<AppAnalysisGetResponse>
 
-    @GET("app_analysis/{id}/")
+    @GET("$APP_ANALYSIS/{id}/")
     fun getAppAnalysis(
         @Path("id") id: Int
     ): Call<AppAnalysis>
 
 
-    @POST("app_analysis/")
+    @POST("$APP_ANALYSIS/")
     fun addAppAnalysis(@Body appAnalysis: AppAnalysis) : Call<Void>
 
-    @PUT("app_analysis/{id}/")
+    @PUT("$APP_ANALYSIS/{id}/")
     fun updateAppAnalysis(@Path("id") id:Int, @Body appAnalysis: AppAnalysis) : Call<Void>
 
-    @DELETE("app_analysis/{id}/")
+    @DELETE("$APP_ANALYSIS/{id}/")
     fun deleteAppAnalysis(@Path("id") id:Int) : Call<Void>
 
     /******************************************************************************
      * Development Envinronment
      **************************************************************************** */
-    @GET("development_environments/")
+    @GET("$DEVELOPMENT_ENVIRONMENTS/")
     fun getDevelopmentEnvironments(
         @Query("limit") limit : String? = null,
         @Query("offset") offset : String? = null,
@@ -53,23 +53,23 @@ interface DefectDojoAPI {
         @Query("name__icontains") nameContainsIgnoreCase: String? = null
     ): Call<DevelopmentEnvironmentGetResponse>
 
-    @GET("development_environments/{id}/")
+    @GET("$DEVELOPMENT_ENVIRONMENTS/{id}/")
     fun getDevelopmentEnvironment(
         @Path("id") id: Int
     ): Call<DevelopmentEnvironment>
 
 
-    @POST("development_environments/")
+    @POST("$DEVELOPMENT_ENVIRONMENTS/")
     fun addDevelopmentEnvironment(@Body developmentEnvironment: DevelopmentEnvironment) : Call<Void>
 
-    @PUT("development_environments/{id}/")
+    @PUT("$DEVELOPMENT_ENVIRONMENTS/{id}/")
     fun updateDevelopmentEnvironment(@Path("id") id:Int, @Body developmentEnvironment: DevelopmentEnvironment) : Call<Void>
 
     /******************************************************************************
      * Product Types
      **************************************************************************** */
 
-    @GET("product_types/")
+    @GET("$PRODUCT_TYPES/")
     fun getProductTypes(
         @Query("limit")limit : String? = null,
         @Query("offset")offset : String? = null,
@@ -79,16 +79,16 @@ interface DefectDojoAPI {
         @Query("order_by") orderBy: String? = null
     ): Call<ProductTypesGetResponse>
 
-    @GET("product_types/{id}")
+    @GET("$PRODUCT_TYPES/{id}")
     fun getProductType(@Path("id") id: Int): Call<ProductType>
 
-    @POST("product_types/")
+    @POST("$PRODUCT_TYPES/")
     fun addProductType(@Body productType: ProductType) : Call<Void>
 
-    @DELETE("product_types/{id}/")
+    @DELETE("$PRODUCT_TYPES/{id}/")
     fun deleteProductType(@Path("id") id: Int): Call<ProductType>
 
-    @PUT("product_types/{id}/")
+    @PUT("$PRODUCT_TYPES/{id}/")
     fun updateProductType(@Path("id") id: Int, @Body productType: ProductType) : Call<Void>
 
 
@@ -96,7 +96,7 @@ interface DefectDojoAPI {
      * Products
      **************************************************************************** */
 
-    @GET("products/")
+    @GET("$PRODUCTS/")
     fun getProducts(@Query("limit")limit : String? = null,
                     @Query("offset")offset : String? = null,
                     @Query("name")name : String? = null,
@@ -106,19 +106,19 @@ interface DefectDojoAPI {
     ): Call<ProductsGetResponse>
 
 
-    @GET("products/{id}")
+    @GET("$PRODUCTS/{id}")
     fun getProduct(@Path("id") productId: Int): Call<Product>
 
-    @POST("products/")
+    @POST("$PRODUCTS/")
     fun addProduct(@Body product: Product): Call<Void>
 
-    @PUT("products/{id}/")
+    @PUT("$PRODUCTS/{id}/")
     fun updateProduct(@Path("id") id: Int, @Body product: Product): Call<Void>
 
     /******************************************************************************
      * Language
      **************************************************************************** */
-    @GET("languages/")
+    @GET("$LANGUAGES/")
     fun getLanguages(
         @Query("limit") limit : String? = null,
         @Query("offset") offset : String? = null,
@@ -130,16 +130,24 @@ interface DefectDojoAPI {
         @Query("product__name__icontains") productNameContainsIgnoreCase: String? = null
     ): Call<LanguagesGetResponse>
 
-    @GET("languages/{id}/")
+    @GET("$LANGUAGES/{id}/")
     fun getLanguage(
         @Path("id") id: Int
     ): Call<Language>
 
+    @POST("$LANGUAGES/")
+    fun addLanguage(@Body language: Language) : Call<Void>
+
+    @DELETE("$LANGUAGES/{id}/")
+    fun deleteLanguage(@Path("id") id: Int): Call<Void>
+
+    @PUT("$LANGUAGES/{id}/")
+    fun updateLanguage(@Path("id") id: Int, @Body language: Language) : Call<Void>
 
     /******************************************************************************
      * Language Types
      **************************************************************************** */
-    @GET("language_types/")
+    @GET("$LANGUAGE_TYPES/")
     fun getLanguageTypes(
         @Query("limit")limit : String? = null,
         @Query("offset")offset : String? = null,
@@ -148,24 +156,24 @@ interface DefectDojoAPI {
         @Query("language__icontains") nameContainsIgnoreCase: String? = null
     ): Call<LanguageTypesGetResponse>
 
-    @GET("language_types/{id}/")
+    @GET("$LANGUAGE_TYPES/{id}/")
     fun getLanguageType(
         @Path("id") id: Int
     ): Call<LanguageType>
 
-    @POST("language_types/")
+    @POST("$LANGUAGE_TYPES/")
     fun addLanguageType(@Body languageType: LanguageType) : Call<Void>
 
-    @DELETE("language_types/{id}/")
+    @DELETE("$LANGUAGE_TYPES/{id}/")
     fun deleteLanguageType(@Path("id") id: Int): Call<Void>
 
-    @PUT("language_types/{id}/")
+    @PUT("$LANGUAGE_TYPES/{id}/")
     fun updateLanguageType(@Path("id") id: Int, @Body languageType: LanguageType) : Call<Void>
     
     /******************************************************************************
      * Users
      **************************************************************************** */
-    @GET("users/")
+    @GET("$USERS/")
     fun getUsers(
         @Query("limit")limit : String? = null,
         @Query("offset")offset : String? = null,
@@ -180,7 +188,7 @@ interface DefectDojoAPI {
         @Query("last_name__icontains") lastNameContainsIgnoreCase: String? = null
     ): Call<UsersGetResponse>
 
-    @GET("users/{id}/")
+    @GET("$USERS/{id}/")
     fun getUser(
         @Path("id") id: Int
     ): Call<User>
@@ -189,6 +197,13 @@ interface DefectDojoAPI {
      * Factory
      **************************************************************************** */
     companion object {
+        const val APP_ANALYSIS = "app_analysis"
+        const val DEVELOPMENT_ENVIRONMENTS = "development_environments"
+        const val LANGUAGES = "languages"
+        const val LANGUAGE_TYPES = "language_types"
+        const val PRODUCTS = "products"
+        const val PRODUCT_TYPES = "product_types"
+        const val USERS = "users"
 
         private fun createRetrofit(apiBaseUrl: String, username: String, apiKey: String, debug: Boolean): Retrofit {
             val httpClient = OkHttpClient.Builder()

@@ -1,10 +1,7 @@
 package cli.endpoint
 
 import DojoConfig
-import cli.GetCommand
-import cli.GetCommandWithName
-import cli.TableFormatter
-import cli.getBody
+import cli.*
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.core.requireObject
@@ -14,10 +11,13 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.google.gson.JsonSyntaxException
 import defectdojo.api.v1.DefectDojoAPI
+import defectdojo.api.v1.Language
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.inSet
 import org.kodein.di.generic.provider
+import retrofit2.Response
+import java.time.LocalDateTime
 
 
 class LanguageCli : CliktCommand(
@@ -33,7 +33,10 @@ val languageModule = Kodein.Module("language") {
     bind<CliktCommand>().inSet() with provider {
         LanguageCli().subcommands(
             LanguageListCli(),
-            LanguageIdCli()
+            LanguageIdCli(),
+            LanguageAddCli(),
+            LanguageUpdateCli(),
+            LanguageDeleteCli()
         )
     }
 }
@@ -77,5 +80,75 @@ class LanguageIdCli : GetCommand(
         val response = dojoAPI.getLanguage(id)
             .execute()
         return tableFormatter.format(listOf(getBody(response)))
+    }
+}
+
+
+class LanguageAddCli : PostCommand(
+    name = "add",
+    help = """Add a language to a specified product."""
+) {
+
+    private val qType by argument("type", help = "The identifier of the type of the language.").int()
+    private val qProduct by argument("product", help = "The identifier of the product where the language will be added.").int()
+    private val qUser by argument("user", help = "The identifier of the user adding this language.").int()
+    private val qCode by option("--code", help = "The number of lines of codes.").int()
+    private val qComment by option("--comment", help = "The number of lines of comments.").int()
+    private val qBlank by option("--blank", help = "The number of blank lines.").int()
+    private val qFiles by option("--files", help = "The number of files.").int()
+
+    override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
+        val language = Language(
+            languageType =  getLanguageTypeUri(qType, dojoConfig),
+            product = getProductUri(qProduct, dojoConfig),
+            user = getUserUri(qUser, dojoConfig),
+            created = LocalDateTime.now().toString(),
+            code = qCode,
+            comment = qComment,
+            blank = qBlank,
+            files = qFiles
+        )
+        return dojoAPI.addLanguage(language).execute()
+    }
+}
+
+class LanguageUpdateCli : PostCommand(
+    name = "update",
+    help = """Update a language."""
+) {
+
+    private val qId by argument("id", help = "The identifier of the language").int()
+    private val qProduct by argument("product", help = "The identifier of the product where the language will be updated.").int()
+    private val qUser by argument("user", help = "The identifier of the user adding this language.").int()
+    private val qType : Int? by option("--type", help = "The identifier of the type of the language.").int()
+    private val qCode by option("--code", help = "The number of lines of codes.").int()
+    private val qComment by option("--comment", help = "The number of lines of comments.").int()
+    private val qBlank by option("--blank", help = "The number of blank lines.").int()
+    private val qFiles by option("--files", help = "The number of files.").int()
+
+    override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
+
+        val language = Language(
+            languageType = qType?.let { getLanguageTypeUri(it, dojoConfig) },
+            product =  getProductUri(qProduct, dojoConfig) ,
+            user = getUserUri(qUser, dojoConfig),
+            code = qCode,
+            comment = qComment,
+            blank = qBlank,
+            files = qFiles
+        )
+        return dojoAPI.updateLanguage(qId, language).execute()
+    }
+}
+
+class LanguageDeleteCli : PostCommand(
+    name = "delete",
+    help = "Remove a language."
+) {
+
+    private val qId by argument("id", help = "The identifier of the language.").int()
+
+    override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
+        return dojoAPI.deleteLanguage(qId).execute()
     }
 }

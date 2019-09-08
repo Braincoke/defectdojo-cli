@@ -7,12 +7,12 @@ data class Language(
 	val code: Int? = null,
 	val blank: Int? = null,
 	val created: String? = null,
-	@field:SerializedName("resource-uri")
+	@field:SerializedName("resource_uri")
 	val resourceUri: String? = null,
 	val files: Int? = null,
 	val comment: Int? = null,
 	val id: Int? = null,
-	@field:SerializedName("language-type")
+	@field:SerializedName("language_type")
 	val languageType: String? = null,
 	val user: String? = null
 ) : DefectDojoObject

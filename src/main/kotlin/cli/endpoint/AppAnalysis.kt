@@ -1,9 +1,6 @@
 package cli.endpoint
 
-import cli.GetCommand
-import cli.GetCommandWithName
-import cli.PostCommand
-import cli.getBody
+import cli.*
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
@@ -125,8 +122,8 @@ class AppAnalysisUpdateCli : PostCommand(
 
     override fun post(dojoAPI: DefectDojoAPI): Response<Void> {
 
-        var productUri = "/api/${dojoConfig.apiVersion}/products/$qProductId/"
-        var userUri =  "/api/${dojoConfig.apiVersion}/users/$qUser/"
+        var productUri = qProductId?.let { getProductUri(it, dojoConfig) }
+        var userUri = qUser?.let { getUserUri(it, dojoConfig) }
 
         if (qProductId == null || qUser == null) {
             val currentAppAnalysis = dojoAPI.getAppAnalysis(qId).execute().body()
