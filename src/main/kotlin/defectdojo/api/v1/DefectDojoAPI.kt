@@ -194,6 +194,23 @@ interface DefectDojoAPI {
     ): Call<User>
 
     /******************************************************************************
+     * Scans
+     **************************************************************************** */
+    @GET("$SCANS/")
+    fun getScans(
+        @Query("limit")limit : String? = null,
+        @Query("offset")offset : String? = null,
+        @Query("settings")settings : String? = null,
+        @Query("settings__contains") settingsContains: String? = null,
+        @Query("settings__icontains") settingsContainsIgnoreCase: String? = null
+    ): Call<ScansGetResponse>
+
+    @GET("$SCANS/{id}/")
+    fun getScan(
+        @Path("id") id: Int
+    ): Call<Scan>
+
+    /******************************************************************************
      * Factory
      **************************************************************************** */
     companion object {
@@ -204,6 +221,7 @@ interface DefectDojoAPI {
         const val PRODUCTS = "products"
         const val PRODUCT_TYPES = "product_types"
         const val USERS = "users"
+        const val SCANS = "scans"
 
         private fun createRetrofit(apiBaseUrl: String, username: String, apiKey: String, debug: Boolean): Retrofit {
             val httpClient = OkHttpClient.Builder()

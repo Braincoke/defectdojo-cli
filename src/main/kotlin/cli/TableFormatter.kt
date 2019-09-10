@@ -135,7 +135,18 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             "FIRST_NAME" to User::firstName.name,
             "LAST_NAME" to User::lastName.name,
             "URI" to User::resourceUri.name,
-            "LAST_LOGIN" to User::lastLogin.name
+            "LAST_LOGIN" to User::lastLogin.name)
+
+    val scanHeaderMapping: Map<String, String> =
+        mapOf(
+            "ID" to Scan::id.name,
+            "SETTINGS" to Scan::scanSettings.name,
+            "STATUS" to Scan::status.name,
+            "BASELINE" to Scan::baseline.name,
+            "PROTOCOL" to Scan::protocol.name,
+            "IPSCANS" to Scan::ipscans.name,
+            "DATE" to Scan::date.name,
+            "URI" to Scan::resourceUri.name
         )
 
     private fun format(stringMatrix: Array<Array<String>>): String {
@@ -217,6 +228,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
                 is ProductsGetResponse -> format(arrayOf(productHeaderMapping.keys.toTypedArray()))
                 is ProductTypesGetResponse -> format(arrayOf(productTypeHeaderMapping.keys.toTypedArray()))
                 is UsersGetResponse -> format(arrayOf(userHeaderMapping.keys.toTypedArray()))
+                is ScansGetResponse -> format(arrayOf(scanHeaderMapping.keys.toTypedArray()))
                 else -> ERROR_MESSAGE
             }
         }
@@ -228,6 +240,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             is ProductsGetResponse -> format(element.products)
             is ProductTypesGetResponse -> format(element.productTypes)
             is UsersGetResponse -> format(element.users)
+            is ScansGetResponse -> format(element.scans)
             else -> ERROR_MESSAGE
         }
     }
@@ -282,6 +295,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             Product::class.java.name -> format(list, productHeaderMapping)
             ProductType::class.java.name -> format(list, productTypeHeaderMapping)
             User::class.java.name -> format(list, userHeaderMapping)
+            Scan::class.java.name -> format(list, scanHeaderMapping)
             else -> ERROR_MESSAGE
         }
     }
