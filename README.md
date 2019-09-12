@@ -33,6 +33,7 @@ The binary file is in `build/install/defectdojo-cli/bin/`
 Copy the binary file to `/usr/local/bin`
 
 ~~~bash
+sudo cp -r build/install/defectdojo-cli/lib/* /usr/local/lib/
 sudo cp build/install/defectdojo-cli/bin/defectdojo-cli /usr/local/bin
 ~~~
 

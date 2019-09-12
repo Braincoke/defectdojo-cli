@@ -97,6 +97,7 @@ fun main(args: Array<String>) {
         import(productTypeModule)
         import(usersModule)
         import(scansModule)
+        import(toolTypeModule)
     }
 
     val commands: Set<CliktCommand> by kodein.instance()

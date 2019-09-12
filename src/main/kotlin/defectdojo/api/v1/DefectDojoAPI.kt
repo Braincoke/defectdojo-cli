@@ -211,6 +211,33 @@ interface DefectDojoAPI {
     ): Call<Scan>
 
     /******************************************************************************
+     * Tool types
+     **************************************************************************** */
+    @GET("$TOOL_TYPES/")
+    fun getToolTypes(
+        @Query("limit") limit : String? = null,
+        @Query("offset") offset : String? = null,
+        @Query("name") name : String? = null,
+        @Query("name__contains") nameContains: String? = null,
+        @Query("name__icontains") nameContainsIgnoreCase: String? = null
+    ): Call<ToolTypesGetResponse>
+
+    @GET("$TOOL_TYPES/{id}/")
+    fun getToolType(
+        @Path("id") id: Int
+    ): Call<ToolType>
+
+
+    @POST("$TOOL_TYPES/")
+    fun addToolType(@Body toolType: ToolType) : Call<Void>
+
+    @PUT("$TOOL_TYPES/{id}/")
+    fun updateToolType(@Path("id") id:Int, @Body toolType: ToolType) : Call<Void>
+
+    @DELETE("$TOOL_TYPES/{id}/")
+    fun deleteToolType(@Path("id") id:Int) : Call<Void>
+
+    /******************************************************************************
      * Factory
      **************************************************************************** */
     companion object {
@@ -222,6 +249,7 @@ interface DefectDojoAPI {
         const val PRODUCT_TYPES = "product_types"
         const val USERS = "users"
         const val SCANS = "scans"
+        const val TOOL_TYPES = "tool_types"
 
         private fun createRetrofit(apiBaseUrl: String, username: String, apiKey: String, debug: Boolean): Retrofit {
             val httpClient = OkHttpClient.Builder()

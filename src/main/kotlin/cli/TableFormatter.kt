@@ -149,6 +149,14 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             "URI" to Scan::resourceUri.name
         )
 
+    val toolTypesHeaderMapping: Map<String, String> =
+        mapOf(
+            "ID" to ToolType::id.name,
+            "NAME" to ToolType::name.name,
+            "DESCRIPTION" to ToolType::description.name,
+            "URI" to ToolType::resourceUri.name
+        )
+
     private fun format(stringMatrix: Array<Array<String>>): String {
         return if (format == TableFormat.PRETTY) {
             formatPretty(stringMatrix)
@@ -229,6 +237,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
                 is ProductTypesGetResponse -> format(arrayOf(productTypeHeaderMapping.keys.toTypedArray()))
                 is UsersGetResponse -> format(arrayOf(userHeaderMapping.keys.toTypedArray()))
                 is ScansGetResponse -> format(arrayOf(scanHeaderMapping.keys.toTypedArray()))
+                is ToolTypesGetResponse -> format(arrayOf(toolTypesHeaderMapping.keys.toTypedArray()))
                 else -> ERROR_MESSAGE
             }
         }
@@ -241,6 +250,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             is ProductTypesGetResponse -> format(element.productTypes)
             is UsersGetResponse -> format(element.users)
             is ScansGetResponse -> format(element.scans)
+            is ToolTypesGetResponse -> format(element.toolTypes)
             else -> ERROR_MESSAGE
         }
     }
@@ -296,6 +306,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             ProductType::class.java.name -> format(list, productTypeHeaderMapping)
             User::class.java.name -> format(list, userHeaderMapping)
             Scan::class.java.name -> format(list, scanHeaderMapping)
+            ToolType::class.java.name -> format(list, toolTypesHeaderMapping)
             else -> ERROR_MESSAGE
         }
     }
