@@ -211,6 +211,32 @@ interface DefectDojoAPI {
     ): Call<Scan>
 
     /******************************************************************************
+     * Tool configurations
+     **************************************************************************** */
+    @GET("$TOOL_CONFIGURATIONS/")
+    fun getToolConfigurations(
+        @Query("limit") limit : String? = null,
+        @Query("offset") offset : String? = null,
+        @Query("name") name : String? = null,
+        @Query("name__contains") nameContains: String? = null,
+        @Query("name__icontains") nameContainsIgnoreCase: String? = null
+    ): Call<ToolConfigurationsGetResponse>
+
+    @GET("$TOOL_CONFIGURATIONS/{id}/")
+    fun getToolConfiguration(
+        @Path("id") id: Int
+    ): Call<ToolConfiguration>
+
+    @POST("$TOOL_CONFIGURATIONS/")
+    fun addToolConfiguration(@Body toolConfiguration: ToolConfiguration) : Call<Void>
+
+    @PUT("$TOOL_CONFIGURATIONS/{id}/")
+    fun updateToolConfiguration(@Path("id") id:Int, @Body toolConfiguration: ToolConfiguration) : Call<Void>
+
+    @DELETE("$TOOL_CONFIGURATIONS/{id}/")
+    fun deleteToolConfiguration(@Path("id") id:Int) : Call<Void>
+
+    /******************************************************************************
      * Tool types
      **************************************************************************** */
     @GET("$TOOL_TYPES/")
@@ -249,6 +275,7 @@ interface DefectDojoAPI {
         const val PRODUCT_TYPES = "product_types"
         const val USERS = "users"
         const val SCANS = "scans"
+        const val TOOL_CONFIGURATIONS = "tool_configurations"
         const val TOOL_TYPES = "tool_types"
 
         private fun createRetrofit(apiBaseUrl: String, username: String, apiKey: String, debug: Boolean): Retrofit {

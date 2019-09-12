@@ -26,6 +26,10 @@ fun getProductUri(productId: Int, dojoConfig: DojoConfig): String {
     return getObjectUri(productId, dojoConfig, DefectDojoAPI.PRODUCTS)
 }
 
+fun getToolTypeUri(toolTypeId: Int, dojoConfig: DojoConfig) : String {
+    return getObjectUri(toolTypeId, dojoConfig, DefectDojoAPI.TOOL_TYPES)
+}
+
 fun getUserUri(userId: Int, dojoConfig: DojoConfig) : String {
     return getObjectUri(userId, dojoConfig, DefectDojoAPI.USERS)
 }

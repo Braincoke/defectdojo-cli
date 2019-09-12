@@ -96,10 +96,10 @@ class AppAnalysisAddCli : PostCommand(
         val appAnalysis = AppAnalysis(
             website = qWebsite,
             name = qName,
-            user = "/api/${dojoConfig.apiVersion}/users/$qUser/",
+            user = getUserUri(qUser, dojoConfig),
             confidence = qConfidence,
             version = qVersion,
-            product = "/api/${dojoConfig.apiVersion}/products/$qId/",
+            product = getProductUri(qId, dojoConfig),
             created = LocalDateTime.now().toString()
         )
         return dojoAPI.addAppAnalysis(appAnalysis).execute()

@@ -97,6 +97,7 @@ fun main(args: Array<String>) {
         import(productTypeModule)
         import(usersModule)
         import(scansModule)
+        import(toolConfigurationModule)
         import(toolTypeModule)
     }
 

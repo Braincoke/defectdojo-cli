@@ -40,10 +40,6 @@ sudo cp build/install/defectdojo-cli/bin/defectdojo-cli /usr/local/bin
 ## Usage
 
 DefectDojo-CLI is still in development.
-Currently the following features endpoints are implemented :
-
-- products
-- product_types
 
 Once you have your jar file you can run the following command to display the help menu :
 
@@ -94,13 +90,13 @@ The list below details which enpoints have been implemented already :
 - [x] products
 - [ ] reimportscan
 - [ ] scan_settings
-- [ ] scans
+- [x] scans
 - [ ] stub_findings
 - [ ] test_types
 - [ ] tests
-- [ ] tool_configurations
+- [x] tool_configurations
 - [ ] tool_product_settings
-- [ ] tool_types
+- [x] tool_types
 - [x] users
 
 

@@ -149,6 +149,34 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             "URI" to Scan::resourceUri.name
         )
 
+    val toolConfigurationsHeaderMapping: Map<String, String> =
+        if (fullDisplay) {
+            mapOf(
+                "ID" to ToolConfiguration::id.name,
+                "TYPE" to ToolConfiguration::toolType.name,
+                "NAME" to ToolConfiguration::name.name,
+                "URL" to ToolConfiguration::url.name,
+                "DESCRIPTION" to ToolConfiguration::description.name,
+                "URI" to ToolConfiguration::resourceUri.name,
+                "AUTHENTICATION" to ToolConfiguration::authenticationType.name,
+                "USERNAME" to ToolConfiguration::username.name,
+                "PASSWORD" to ToolConfiguration::password.name,
+                "KEY_TITLE" to ToolConfiguration::authTitle.name,
+                "API_KEY" to ToolConfiguration::apiKey.name,
+                "SSH_KEY" to ToolConfiguration::ssh.name
+            )
+        } else {
+            mapOf(
+                "ID" to ToolConfiguration::id.name,
+                "TYPE" to ToolConfiguration::toolType.name,
+                "NAME" to ToolConfiguration::name.name,
+                "URL" to ToolConfiguration::url.name,
+                "DESCRIPTION" to ToolConfiguration::description.name,
+                "AUTHENTICATION" to ToolConfiguration::authenticationType.name,
+                "URI" to ToolConfiguration::resourceUri.name
+            )
+        }
+
     val toolTypesHeaderMapping: Map<String, String> =
         mapOf(
             "ID" to ToolType::id.name,
@@ -237,6 +265,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
                 is ProductTypesGetResponse -> format(arrayOf(productTypeHeaderMapping.keys.toTypedArray()))
                 is UsersGetResponse -> format(arrayOf(userHeaderMapping.keys.toTypedArray()))
                 is ScansGetResponse -> format(arrayOf(scanHeaderMapping.keys.toTypedArray()))
+                is ToolConfigurationsGetResponse -> format(arrayOf(toolConfigurationsHeaderMapping.keys.toTypedArray()))
                 is ToolTypesGetResponse -> format(arrayOf(toolTypesHeaderMapping.keys.toTypedArray()))
                 else -> ERROR_MESSAGE
             }
@@ -250,6 +279,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             is ProductTypesGetResponse -> format(element.productTypes)
             is UsersGetResponse -> format(element.users)
             is ScansGetResponse -> format(element.scans)
+            is ToolConfigurationsGetResponse -> format(element.toolConfigurations)
             is ToolTypesGetResponse -> format(element.toolTypes)
             else -> ERROR_MESSAGE
         }
@@ -286,7 +316,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
                     }
                     attributeValue
                 }
-                var matrixRowIndex = if(noHeaders) { rowIndex } else { rowIndex + 1 }
+                val matrixRowIndex = if(noHeaders) { rowIndex } else { rowIndex + 1 }
                 stringMatrix[matrixRowIndex] = row
             }
         }
@@ -306,6 +336,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             ProductType::class.java.name -> format(list, productTypeHeaderMapping)
             User::class.java.name -> format(list, userHeaderMapping)
             Scan::class.java.name -> format(list, scanHeaderMapping)
+            ToolConfiguration::class.java.name -> format(list, toolConfigurationsHeaderMapping)
             ToolType::class.java.name -> format(list, toolTypesHeaderMapping)
             else -> ERROR_MESSAGE
         }
