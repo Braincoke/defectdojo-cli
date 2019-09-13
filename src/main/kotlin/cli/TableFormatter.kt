@@ -177,6 +177,28 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             )
         }
 
+    val toolProductSettingsHeaderMapping: Map<String, String> =
+        if(fullDisplay) {
+            mapOf(
+                "ID" to ToolProductSetting::id.name,
+                "NAME" to ToolProductSetting::name.name,
+                "DESCRIPTION" to ToolProductSetting::description.name,
+                "URL" to ToolProductSetting::url.name,
+                "PROJECT" to ToolProductSetting::toolProjectId.name,
+                "CONFIGURATION" to ToolProductSetting::toolConfiguration.name,
+                "URI" to ToolProductSetting::resourceUri.name
+            )
+        } else {
+            mapOf(
+                "ID" to ToolProductSetting::id.name,
+                "NAME" to ToolProductSetting::name.name,
+                "DESCRIPTION" to ToolProductSetting::description.name,
+                "URL" to ToolProductSetting::url.name,
+                "PROJECT" to ToolProductSetting::toolProjectId.name,
+                "CONFIGURATION" to ToolProductSetting::toolConfiguration.name
+            )
+        }
+
     val toolTypesHeaderMapping: Map<String, String> =
         mapOf(
             "ID" to ToolType::id.name,
@@ -267,6 +289,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
                 is ScansGetResponse -> format(arrayOf(scanHeaderMapping.keys.toTypedArray()))
                 is ToolConfigurationsGetResponse -> format(arrayOf(toolConfigurationsHeaderMapping.keys.toTypedArray()))
                 is ToolTypesGetResponse -> format(arrayOf(toolTypesHeaderMapping.keys.toTypedArray()))
+                is ToolProductSettingsGetResponse -> format(arrayOf(toolProductSettingsHeaderMapping.keys.toTypedArray()))
                 else -> ERROR_MESSAGE
             }
         }
@@ -281,6 +304,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             is ScansGetResponse -> format(element.scans)
             is ToolConfigurationsGetResponse -> format(element.toolConfigurations)
             is ToolTypesGetResponse -> format(element.toolTypes)
+            is ToolProductSettingsGetResponse -> format(element.toolProductSettings)
             else -> ERROR_MESSAGE
         }
     }
@@ -338,6 +362,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             Scan::class.java.name -> format(list, scanHeaderMapping)
             ToolConfiguration::class.java.name -> format(list, toolConfigurationsHeaderMapping)
             ToolType::class.java.name -> format(list, toolTypesHeaderMapping)
+            ToolProductSetting::class.java.name -> format(list, toolProductSettingsHeaderMapping)
             else -> ERROR_MESSAGE
         }
     }

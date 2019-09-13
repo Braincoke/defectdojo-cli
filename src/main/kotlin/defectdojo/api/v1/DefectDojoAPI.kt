@@ -235,7 +235,33 @@ interface DefectDojoAPI {
 
     @DELETE("$TOOL_CONFIGURATIONS/{id}/")
     fun deleteToolConfiguration(@Path("id") id:Int) : Call<Void>
+    
+    /******************************************************************************
+     * Tool configurations
+     **************************************************************************** */
+    @GET("$TOOL_PRODUCT_SETTINGS/")
+    fun getToolProductSettings(
+        @Query("limit") limit : String? = null,
+        @Query("offset") offset : String? = null,
+        @Query("name") name : String? = null,
+        @Query("name__contains") nameContains: String? = null,
+        @Query("name__icontains") nameContainsIgnoreCase: String? = null
+    ): Call<ToolProductSettingsGetResponse>
 
+    @GET("$TOOL_PRODUCT_SETTINGS/{id}/")
+    fun getToolProductSetting(
+        @Path("id") id: Int
+    ): Call<ToolProductSetting>
+
+    @POST("$TOOL_PRODUCT_SETTINGS/")
+    fun addToolProductSetting(@Body toolProductSetting: ToolProductSetting) : Call<Void>
+
+    @PUT("$TOOL_PRODUCT_SETTINGS/{id}/")
+    fun updateToolProductSetting(@Path("id") id:Int, @Body toolProductSetting: ToolProductSetting) : Call<Void>
+
+    @DELETE("$TOOL_PRODUCT_SETTINGS/{id}/")
+    fun deleteToolProductSetting(@Path("id") id:Int) : Call<Void>
+    
     /******************************************************************************
      * Tool types
      **************************************************************************** */
@@ -277,6 +303,7 @@ interface DefectDojoAPI {
         const val SCANS = "scans"
         const val TOOL_CONFIGURATIONS = "tool_configurations"
         const val TOOL_TYPES = "tool_types"
+        const val TOOL_PRODUCT_SETTINGS = "tool_product_settings"
 
         private fun createRetrofit(apiBaseUrl: String, username: String, apiKey: String, debug: Boolean): Retrofit {
             val httpClient = OkHttpClient.Builder()

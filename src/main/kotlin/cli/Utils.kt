@@ -25,6 +25,9 @@ fun getLanguageTypeUri(languageTypeId: Int, dojoConfig: DojoConfig): String {
 fun getProductUri(productId: Int, dojoConfig: DojoConfig): String {
     return getObjectUri(productId, dojoConfig, DefectDojoAPI.PRODUCTS)
 }
+fun getToolConfUri(toolConfId: Int, dojoConfig: DojoConfig) : String {
+    return getObjectUri(toolConfId, dojoConfig, DefectDojoAPI.TOOL_CONFIGURATIONS)
+}
 
 fun getToolTypeUri(toolTypeId: Int, dojoConfig: DojoConfig) : String {
     return getObjectUri(toolTypeId, dojoConfig, DefectDojoAPI.TOOL_TYPES)
