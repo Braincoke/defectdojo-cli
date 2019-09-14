@@ -95,7 +95,7 @@ The list below details which enpoints have been implemented already :
 - [ ] test_types
 - [ ] tests
 - [x] tool_configurations
-- [ ] tool_product_settings
+- [x] tool_product_settings
 - [x] tool_types
 - [x] users
 

@@ -40,3 +40,17 @@ fun getUserUri(userId: Int, dojoConfig: DojoConfig) : String {
 fun getObjectUri(objectId: Int, dojoConfig: DojoConfig, endpoint: String) : String {
     return "/api/${dojoConfig.apiVersion}/$endpoint/$objectId/"
 }
+
+
+fun getPort(protocol: String?) : Int {
+    if (protocol == null) return 80
+    return when(protocol.toLowerCase()) {
+        "http" -> 80
+        "https" -> 443
+        "ftp" -> 21
+        "ssh" -> 22
+        "smtp" -> 25
+        "sftp" -> 989
+        else -> 443
+    }
+}

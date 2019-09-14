@@ -91,6 +91,7 @@ fun main(args: Array<String>) {
         bind() from setBinding<CliktCommand>()
         import(appAnalysisModule)
         import(developmentEnvironmentModule)
+        import(endpointModule)
         import(languageModule)
         import(languageTypeModule)
         import(productModule)

@@ -41,7 +41,16 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             "NAME" to DevelopmentEnvironment::name.name,
             "URI" to DevelopmentEnvironment::resourceUri.name
         )
+    
+    val endpointHeaderMapping =
+        mapOf(
+            "ID" to Endpoint::id.name,
+            "ENDPOINT" to Endpoint::url.name,
+            "PRODUCT" to Endpoint::product.name,
+            "URI" to Endpoint::resourceUri.name
+        )
 
+    
     val languageHeaderMapping =
         if (fullDisplay) {
             mapOf(
@@ -281,6 +290,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
             return when (element) {
                 is AppAnalysisGetResponse -> format(arrayOf(appAnalysisHeaderMapping.keys.toTypedArray()))
                 is DevelopmentEnvironmentGetResponse -> format(arrayOf(developmentEnvironmentHeaderMapping.keys.toTypedArray()))
+                is EndpointsGetResponse -> format(arrayOf(endpointHeaderMapping.keys.toTypedArray()))
                 is LanguagesGetResponse -> format(arrayOf(languageHeaderMapping.keys.toTypedArray()))
                 is LanguageTypesGetResponse -> format(arrayOf(languageTypeHeaderMapping.keys.toTypedArray()))
                 is ProductsGetResponse -> format(arrayOf(productHeaderMapping.keys.toTypedArray()))
@@ -296,6 +306,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
         return when (element) {
             is AppAnalysisGetResponse -> format(element.appAnalysisList)
             is DevelopmentEnvironmentGetResponse -> format(element.developmentEnvironments)
+            is EndpointsGetResponse -> format(element.endpoints)
             is LanguagesGetResponse -> format(element.languages)
             is LanguageTypesGetResponse -> format(element.languageTypes)
             is ProductsGetResponse -> format(element.products)
@@ -354,6 +365,7 @@ class TableFormatter(private val noHeaders: Boolean, fullDisplay: Boolean, val f
         return when (T::class.java.name) {
             AppAnalysis::class.java.name -> format(list, appAnalysisHeaderMapping)
             DevelopmentEnvironment::class.java.name -> format(list, developmentEnvironmentHeaderMapping)
+            Endpoint::class.java.name -> format(list, endpointHeaderMapping)
             Language::class.java.name -> format(list, languageHeaderMapping)
             LanguageType::class.java.name -> format(list, languageTypeHeaderMapping)
             Product::class.java.name -> format(list, productHeaderMapping)

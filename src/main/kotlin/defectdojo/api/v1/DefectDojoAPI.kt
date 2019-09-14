@@ -64,7 +64,36 @@ interface DefectDojoAPI {
 
     @PUT("$DEVELOPMENT_ENVIRONMENTS/{id}/")
     fun updateDevelopmentEnvironment(@Path("id") id:Int, @Body developmentEnvironment: DevelopmentEnvironment) : Call<Void>
+    
+    /******************************************************************************
+     * Endpoint
+     **************************************************************************** */
+    @GET("$ENDPOINTS/")
+    fun getEndpoints(
+        @Query("limit") limit : String? = null,
+        @Query("offset") offset : String? = null,
+        @Query("host") host : String? = null,
+        @Query("host__contains") hostContains: String? = null,
+        @Query("host__icontains") hostContainsIgnoreCase: String? = null,
+        @Query("product__id") productId: String? = null,
+        @Query("product__name") productName: String? = null,
+        @Query("product__name__icontains") productNameContainsIgnoreCase: String? = null
+    ): Call<EndpointsGetResponse>
 
+    @GET("$ENDPOINTS/{id}/")
+    fun getEndpoint(
+        @Path("id") id: Int
+    ): Call<Endpoint>
+
+    @POST("$ENDPOINTS/")
+    fun addEndpoint(@Body endpoint: Endpoint) : Call<Void>
+
+    @DELETE("$ENDPOINTS/{id}/")
+    fun deleteEndpoint(@Path("id") id: Int): Call<Void>
+
+    @PUT("$ENDPOINTS/{id}/")
+    fun updateEndpoint(@Path("id") id: Int, @Body endpoint: Endpoint) : Call<Void>
+    
     /******************************************************************************
      * Product Types
      **************************************************************************** */
@@ -295,6 +324,7 @@ interface DefectDojoAPI {
     companion object {
         const val APP_ANALYSIS = "app_analysis"
         const val DEVELOPMENT_ENVIRONMENTS = "development_environments"
+        const val ENDPOINTS = "endpoints"
         const val LANGUAGES = "languages"
         const val LANGUAGE_TYPES = "language_types"
         const val PRODUCTS = "products"
